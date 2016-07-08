@@ -1,0 +1,5 @@
+# To override settings in your local installation, copy this file to local.py
+# and add any settings change below
+
+from .common import *
+

@@ -1,0 +1,2 @@
+DUMMY_SETTING = "hello"
+

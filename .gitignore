@@ -3,6 +3,18 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# File backups and locks
+*.swp
+*.swo
+*~
+.~lock.*
+
+# Project local settings
+src/settings/local.py
+
+# Ctags database
+tags
+
 # C extensions
 *.so
 
