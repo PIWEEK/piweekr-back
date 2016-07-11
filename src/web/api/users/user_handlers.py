@@ -11,5 +11,8 @@ from tools.adt.converter import to_plain, from_plain
 # @login_required
 def list_users(request):
     users = user_actions.list_users()
-    return responses.Ok([to_plain(user) for user in users])
+    return responses.Ok([
+        to_plain(user, ignore_fields=['password'])
+        for user in users
+    ])
 

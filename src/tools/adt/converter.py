@@ -1,14 +1,14 @@
 from .types import ADT
 
 
-def to_plain(the_object):
+def to_plain(the_object, *args, **kwargs):
     converter = ObjectConverter.get(type(the_object))
-    return converter.to_plain(the_object)
+    return converter.to_plain(the_object, *args, **kwargs)
 
 
-def from_plain(the_type, plain_data):
+def from_plain(the_type, plain_data, *args, **kwargs):
     converter = ObjectConverter.get(the_type)
-    return converter.from_plain(the_type, plain_data)
+    return converter.from_plain(the_type, plain_data, *args, **kwargs)
 
 
 class ObjectConverter:
@@ -36,12 +36,13 @@ class IdentityConverter(ObjectConverter):
 
 
 class ADTConverter(ObjectConverter):
-    def to_plain(self, the_object):
+    def to_plain(self, the_object, ignore_fields=[]):
         d = {}
         for field_name, field in the_object._fields.items():
-            value = getattr(the_object, field_name)
-            converter = ObjectConverter.get(type(value))
-            d[field_name] = converter.to_plain(value)
+            if not field_name in ignore_fields:
+                value = getattr(the_object, field_name)
+                converter = ObjectConverter.get(type(value))
+                d[field_name] = converter.to_plain(value)
         return d
 
     def from_plain(self, the_type, plain_data):
