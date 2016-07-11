@@ -1,5 +1,4 @@
 click==6.2.0
-livereload==2.3.2
 pytest==2.8.1
 pytest-env==0.6.0
 pytest-pythonpath==0.7
