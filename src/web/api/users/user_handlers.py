@@ -12,7 +12,7 @@ from tools.adt.converter import to_plain, from_plain
 def list_users(request):
     users = user_actions.list_users()
     return responses.Ok([
-        to_plain(user, ignore_fields=['password'])
+        to_plain(user, ignore_fields=["id", "password"])
         for user in users
     ])
 
