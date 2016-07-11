@@ -13,10 +13,10 @@ def register_new_user(user_for_register):
         avatar = ''
     )
 
-    return user_repository.create_user(user)
+    return user_repository.create(user)
 
 
 def list_users():
-    users = user_repository.list_users()
+    users = user_repository.list()
     return users
 

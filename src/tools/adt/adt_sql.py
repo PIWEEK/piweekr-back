@@ -67,12 +67,12 @@ class SQLADTRepository:
         return instance
 
     def retrieve_single_adt(self, context, the_class, select):
-        data = self.conn.select_single_row(
+        row = self.conn.select_single_row(
             context.session,
             dict,
             select,
         )
-        return from_plain(the_class, data)
+        return the_class(**row) if row else None
 
     def retrieve_adts(self, context, the_class, select):
         rows = self.conn.select_rows(

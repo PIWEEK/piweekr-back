@@ -13,5 +13,5 @@ class User(ADTID):
     password = StrField()
     full_name = StrField()
     email = StrField()
-    avatar = StrField()
+    avatar = StrField(null=True)
 

@@ -27,6 +27,16 @@ def runserver():
 
 
 @cli.command()
+def sample_data():
+    """
+    Generate some random data for testing.
+    """
+    from core.sample_data import SampleData
+    sample_data = SampleData()
+    sample_data.run()
+
+
+@cli.command()
 @click.argument("user_name", nargs=1, type=click.STRING)
 @click.argument("password", nargs=1, type=click.STRING)
 @click.argument("full_name", nargs=1, type=click.STRING)
