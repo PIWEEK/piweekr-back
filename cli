@@ -7,7 +7,8 @@ import click
 SRC_DIR = os.path.join(os.path.dirname(__file__), "src")
 sys.path.append(SRC_DIR)
 
-# from core import actions
+from core import entities
+from core import actions
 # from core import exceptions
 
 
@@ -23,6 +24,27 @@ def runserver():
     """
     from web.server import runserver
     runserver()
+
+
+@cli.command()
+@click.argument("user_name", nargs=1, type=click.STRING)
+@click.argument("password", nargs=1, type=click.STRING)
+@click.argument("full_name", nargs=1, type=click.STRING)
+@click.argument("email", nargs=1, type=click.STRING)
+def create_user(user_name, password, full_name, email):
+    """
+    Register a new user in the system.
+    """
+    user = actions.register_new_user(
+        entities.UserForRegister(
+            user_name = user_name,
+            clear_password = password,
+            full_name = full_name,
+            email = email,
+        )
+    )
+
+    print("Created user {}".format(user.user_name))
 
 
 if __name__ == "__main__":
