@@ -7,7 +7,8 @@ OBJETO: user
  +avatar (objeto json)
 
   POST /api/v1/login
-    se envía un login y un password, devuelve el token
+    se envía un login y un password, devuelve el usuario logado, con un campo
+    extra que es el token de autenticación
 
   POST /api/v1/logout
     invalida el token del usuario logado
