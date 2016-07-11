@@ -1,0 +1,65 @@
+
+OBJETO: usuario
+
+  username
+  full_name
+  icon_small
+  icon_big
+
+  POST /api/v1/login
+    se envía un login y un password, devuelve el token
+
+  POST /api/v1/logout
+    invalida el token del usuario logado
+
+  GET /api/v1/users
+    devuelve todos los usuarios del sistema
+
+  GET /api/v1/users/<username>
+    devuelve los datos de un usuario
+
+
+OBJETO: idea
+
+  uuid
+  title
+  description
+  owner (contiene el username)
+  is_public
+  forked_from (contiene el uuid)
+
+  GET /api/v1/ideas?<filtros>
+    lista las ideas que puede ver un usuario (las propias, las que está inscrito y las públicas)
+    only_involved=True -> sólo saca las propias, inscritas y de las públicas las watching
+
+  GET /api/v1/ideas/<uuid>
+    devuelve una idea
+
+  POST /api/v1/ideas
+    crea una idea nueva desde cero (campos title y description)
+
+  PUT /api/v1/ideas/<uuid>
+    modifica una idea (campos title y description)
+
+  DELETE /api/v1/ideas/<uuid>
+    borra una idea y todos sus vínculos
+
+  GET /api/v1/ideas/<uuid>/watchers
+    devuelve los usuarios que están watcheando la idea
+
+  POST /api/v1/ideas/<uuid>/watchers
+    añade al usuario logado a la lista de watchers
+
+  DELETE /api/v1/ideas/<uuid>/watchers
+    quita al usuario logado de la lista de watchers
+
+  GET /api/v1/ideas/<uuid>/invited
+    devuelve los usuarios invitados a la idea
+
+  POST /api/v1/ideas/<uuid>/invited
+    añade un usuario pasado en el body a la lista de invitados (sólo lo puede hacer el owner)
+
+  DELETE /api/v1/ideas/<uuid>/invited
+    quita un usuario pasado en el body de la lista de invitados (sólo lo puede hacer el owner)
+
+
