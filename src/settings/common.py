@@ -6,3 +6,5 @@ DB_OPTIONS = {
     "ECHO": False,
 }
 
+SECRET_KEY = "this-must-be-changed!"
+

@@ -3,6 +3,7 @@ pytest==2.8.1
 pytest-env==0.6.0
 pytest-pythonpath==0.7
 anillo==0.1.6
+anillo_auth==0.1.2
 sqlalchemy==1.0.11
 psycopg2==2.6.1
 passlib==1.6.5
