@@ -1,10 +1,10 @@
 
-OBJETO: usuario
+OBJETO: user
 
-  username
-  full_name
-  icon_small
-  icon_big
+ +username
+  email
+ +fullName
+ +avatar (objeto json)
 
   POST /api/v1/login
     se envía un login y un password, devuelve el token
@@ -18,19 +18,29 @@ OBJETO: usuario
   GET /api/v1/users/<username>
     devuelve los datos de un usuario
 
+  PUT /api/v1/users/<username>
+    modifica los datos de un usuario (sólo se puede editar el propio)
+    el username no se puede modificar
+    añade campo password
+
 
 OBJETO: idea
 
-  uuid
-  title
+ +uuid
+ +title
   description
-  owner (contiene el username)
+ +owner
+ +created_at (datetime formato iso)
   is_public
-  forked_from (contiene el uuid)
+  forked_from
+  comments_count (nº entero)
+  reactions_counts (un diccionario tag:entero)
 
   GET /api/v1/ideas?<filtros>
-    lista las ideas que puede ver un usuario (las propias, las que está inscrito y las públicas)
-    only_involved=True -> sólo saca las propias, inscritas y de las públicas las watching
+    lista las ideas que puede ver un usuario (las propias, las que está invitado y las públicas)
+    title=<texto> -> filtra por título
+    filter=all|owned (sólo las propias)|involved (propias+invitado+watching)
+    order_by=title|date|popularity (suma de comments_count + reactions_count)
 
   GET /api/v1/ideas/<uuid>
     devuelve una idea
@@ -42,10 +52,10 @@ OBJETO: idea
     modifica una idea (campos title y description)
 
   DELETE /api/v1/ideas/<uuid>
-    borra una idea y todos sus vínculos
+    borra una idea y todos sus vínculos (sólo lo puede hacer el owner)
 
   GET /api/v1/ideas/<uuid>/watchers
-    devuelve los usuarios que están watcheando la idea
+    devuelve los usuarios que están watcheando la idea (ordenados por full_name) (sólo ideas públicas)
 
   POST /api/v1/ideas/<uuid>/watchers
     añade al usuario logado a la lista de watchers
@@ -54,12 +64,126 @@ OBJETO: idea
     quita al usuario logado de la lista de watchers
 
   GET /api/v1/ideas/<uuid>/invited
-    devuelve los usuarios invitados a la idea
+    devuelve los usuarios invitados a la idea (ordenados por full_name) (sólo ideas privadas)
 
   POST /api/v1/ideas/<uuid>/invited
-    añade un usuario pasado en el body a la lista de invitados (sólo lo puede hacer el owner)
+    añade una lista de usuarios pasados en el body a la lista de invitados (sólo lo puede hacer el owner)
 
   DELETE /api/v1/ideas/<uuid>/invited
     quita un usuario pasado en el body de la lista de invitados (sólo lo puede hacer el owner)
 
+  POST /api/v1/ideas/<uuid>/fork
+    crea una nueva idea forkeada, asignada al usuario logado; devuelve la idea nueva
+
+  POST /api/v1/ideas/<uuid>/promote
+    crea un nuevo proyecto a partir de la idea, y desactiva la idea (sólo lo puede hacer el owner)
+    devuelve el proyecto creado
+
+
+OBJETO: comment
+
+ +uuid
+ +owner
+ +created_at (formato iso)
+ +content
+
+  GET /api/v1/ideas/<uuid>/comments
+    devuelve los comentarios de una idea (ordenados por fecha ascendente)
+
+  POST /api/v1/ideas/<uuid>/comments
+    añade un comentario, cuyo dueño será el usuario logado (campo content)
+
+
+OBJETO: reaction
+
+ +uuid
+ +owner
+ +created_at (datetime formato iso)
+ +code (emoji code)
+
+  GET /api/v1/ideas/<uuid>/reactions
+    devuelve las reacciones de una idea (ordenadas por fecha ascendente)
+
+  POST /api/v1/ideas/<uuid>/reactions
+    añade una reacción, cuyo dueño será el usuario logado (campo code)
+    (si ya existía una reacción del mismo usuario, es reemplazada por la nueva)
+
+
+OBJETO: piweek
+
+ +uuid
+ +title
+ +start_date (date formato iso)
+
+  GET /api/v1/piweeks?<filters>
+    devuelve todas las ediciones de piweek (ordenadas por fecha ascendente)
+    filter=all|past (sólo las pasadas)|current (sólo la próxima, si existe)
+
+  GET /api/v1/piweeks/<uuid>/projects
+    devuelve todos los proyectos de esa piweek
+    title=<texto> -> filtra por título
+    filter=all|owned (sólo los propios)|involved (propios+interested+participant)
+    order_by=title|date|popularity (suma de comments_count + reactions_count)
+
+
+OBJETO: project
+
+  uuid
+  title
+  description
+  technologies (lista de strings)
+  needs
+  logo (imagen)
+  owner
+  piweek
+  created_at (datetime formato iso)
+  idea_from
+  comments_count (nº entero)
+  reactions_counts (un diccionario tag:entero)
+
+  GET /api/v1/piweeks/<uuid>/projects?<filtros>
+    lista todos los proyectos
+    title=<texto> -> filtra por título
+    filter=all|owned (sólo los propios)|involved (propios+interested+participant)
+    order_by=title|date|popularity (suma de comments_count + reactions_count)
+
+  GET /api/v1/projects/<uuid>
+    devuelve un proyecto
+
+  POST /api/v1/projects
+    crea un proyecto nuevo desde cero asociado a la piweek (campos title, description, technologies, needs)
+    el campo piweek se rellena automáticamente con la piweek actual
+
+  PUT /api/v1/projects/<uuid>
+    modifica un proyecto (campos title, description, technologies, needs)
+
+  DELETE /api/v1/projects/<uuid>
+    borra un proyecto y todos sus vínculos
+
+  GET /api/v1/projects/<uuid>/watchers
+    devuelve los usuarios que están watcheando el proyecto (ordenados por full_name)
+
+  POST /api/v1/projects/<uuid>/watchers
+    añade al usuario logado a la lista de watchers
+
+  DELETE /api/v1/projects/<uuid>/watchers
+    quita al usuario logado de la lista de watchers
+
+  GET /api/v1/projects/<uuid>/interested
+    devuelve los usuarios interesados en el proyecto (ordenados por full_name)
+
+  POST /api/v1/projects/<uuid>/interested
+    añade el usuario logado a la lista de interesados (si estaba en participantes se quita)
+
+  DELETE /api/v1/projects/<uuid>/interested
+    quita el usuario logado de la lista de interesados
+
+  GET /api/v1/projects/<uuid>/participants
+    devuelve los usuarios participantes (confirmados) en el proyecto (ordenados por full_name)
+
+  POST /api/v1/projects/<uuid>/participants
+    añade el usuario logado a la lista de participantes (si estaba en interesados se quita)
+
+  DELETE /api/v1/projects/<uuid>/participants
+    quita el usuario logado de la lista de participantes
 
