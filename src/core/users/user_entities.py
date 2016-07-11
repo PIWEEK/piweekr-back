@@ -1,5 +1,6 @@
 from tools.adt.types import ADTID, Field, StrField, IntField
 
+
 class UserForRegister(ADTID):
     user_name = StrField()
     clear_password = StrField()
@@ -12,5 +13,5 @@ class User(ADTID):
     password = StrField()
     full_name = StrField()
     email = StrField()
-    description = StrField()
+    avatar = StrField()
 

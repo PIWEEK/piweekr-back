@@ -74,7 +74,15 @@ class SQLADTRepository:
         )
         return from_plain(the_class, data)
 
-    def retrieve_adts(self, context, classes, select):
+    def retrieve_adts(self, context, the_class, select):
+        rows = self.conn.select_rows(
+            context.session,
+            dict,
+            select
+        )
+        return [the_class(**row) for row in rows]
+
+    def retrieve_joined_adts(self, context, classes, select):
         rows = self.conn.select_rows(
             context.session,
             dict,

@@ -63,7 +63,6 @@ def test_sql_persistence():
         )
 
     with repo.context() as context:
-
         r_deck = repo.retrieve_single_adt(context,
             Deck,
             select([repo.decks])
@@ -74,8 +73,17 @@ def test_sql_persistence():
     assert r_deck.name == deck.name
 
     with repo.context() as context:
+        r_cards = repo.retrieve_adts(context,
+            Card,
+            select([repo.cards])
+        )
 
-        r_decks = repo.retrieve_adts(context,
+    assert len(r_cards) == 2
+    assert card_1.id in [card.id for card in r_cards]
+    assert card_2.id in [card.id for card in r_cards]
+
+    with repo.context() as context:
+        r_decks = repo.retrieve_joined_adts(context,
             {"decks": Deck, "cards": Card},
             select([repo.decks, repo.cards], use_labels=True)
                 .select_from(outerjoin(

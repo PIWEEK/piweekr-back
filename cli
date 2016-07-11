@@ -7,8 +7,8 @@ import click
 SRC_DIR = os.path.join(os.path.dirname(__file__), "src")
 sys.path.append(SRC_DIR)
 
-from core import entities
-from core import actions
+from core.users import user_entities
+from core.users import user_actions
 # from core import exceptions
 
 
@@ -35,8 +35,8 @@ def create_user(user_name, password, full_name, email):
     """
     Register a new user in the system.
     """
-    user = actions.register_new_user(
-        entities.UserForRegister(
+    user = user_actions.register_new_user(
+        user_entities.UserForRegister(
             user_name = user_name,
             clear_password = password,
             full_name = full_name,
