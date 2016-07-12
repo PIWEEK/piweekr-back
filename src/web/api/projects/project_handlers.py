@@ -49,6 +49,8 @@ def list_projects(request):
                 },
             },
             "created_at": "2016-07-11T16:25:13.112432",
+            "comments_count": 3,
+            "reactions_counts": {"thumbsup": 3, "dancer": 10},
         },
         {
             "uuid": "9adfsnansyhr234hor283",
@@ -85,6 +87,8 @@ def list_projects(request):
                 },
             },
             "created_at": "2016-07-11T17:30:15.442647",
+            "comments_count": 0,
+            "reactions_counts": {},
         },
         {
             "uuid": "32498fjerfhfhr79rr",
@@ -121,6 +125,8 @@ def list_projects(request):
                 },
             },
             "created_at": "2016-07-12T03:45:18.3335556",
+            "comments_count": 10,
+            "reactions_counts": {"dancer": 7, "confused": 1},
         },
     ])
 
