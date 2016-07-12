@@ -10,7 +10,11 @@ def register_new_user(user_for_register):
         password = generate_hash(user_for_register.clear_password),
         full_name = user_for_register.full_name,
         email = user_for_register.email,
-        avatar = ''
+        avatar = {
+            "head": 1,
+            "body": 1,
+            "legs": 1,
+        }
     )
 
     return user_repository.create(user)

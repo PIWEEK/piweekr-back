@@ -30,9 +30,11 @@ class SQLADTRepository:
         else:
             pass
 
-    def add_adt_table(self, the_class, name, columns = None):
-        if not columns:
-            columns = [self._field_to_column(name, f) for name, f in the_class._fields.items()]
+    def add_adt_table(self, the_class, name, manual_columns = {}):
+        columns = [
+            manual_columns[name] if name in manual_columns else self._field_to_column(name, f)
+            for name, f in the_class._fields.items()
+        ]
         self.conn.add_table(name, name, columns)
         setattr(self, name, getattr(self.conn, name))
 

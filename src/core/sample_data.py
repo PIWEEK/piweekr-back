@@ -35,7 +35,11 @@ class SampleData():
                 password=generate_hash("123123"),
                 full_name=self.sd.fullname(locale='us'),
                 email=self.sd.word() + '@piweekr.org',
-                avatar=None,
+                avatar = {
+                    "head": self.sd.int(1, 10),
+                    "body": self.sd.int(1, 10),
+                    "legs": self.sd.int(1, 10),
+                }
             )
             user = user_repository.create(user)
             self.user_ids.append(user.id)

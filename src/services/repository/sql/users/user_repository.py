@@ -1,11 +1,18 @@
+from sqlalchemy import Column
 from sqlalchemy.sql import select, outerjoin
+from sqlalchemy.dialects.postgresql import JSONB
+
 from tools.adt.adt_sql import SQLADTRepository
 
 from core.users import user_entities
 
 from services.repository.sql import repo
 
-repo.add_adt_table(user_entities.User, "users")
+repo.add_adt_table(user_entities.User, "users",
+    manual_columns={
+        "avatar": Column('avatar', JSONB),
+    }
+)
 
 
 def create(user):
