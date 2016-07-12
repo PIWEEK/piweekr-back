@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, DateTime, Float, ForeignKey, Boolean, Text
+from sqlalchemy_utils.types.arrow import ArrowType
 from contextlib import contextmanager
 
 from tools.sql.sql_connection import SQLConnection
@@ -40,6 +41,7 @@ class SQLADTRepository:
 
     def _field_to_column(self, name, field):
         import datetime
+        from arrow import arrow
         if field.type == str:
             column_type = String
         elif field.type == int:
@@ -50,6 +52,8 @@ class SQLADTRepository:
             column_type = Date
         elif field.type == datetime.datetime:
             column_type = DateTime
+        elif field.type == arrow.Arrow:
+            column_type = ArrowType
         elif field.type == bool:
             column_type = Boolean
         else:

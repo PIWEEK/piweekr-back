@@ -5,8 +5,9 @@ pytest-pythonpath==0.7
 anillo==0.1.6
 anillo_auth==0.1.2
 sqlalchemy==1.0.11
+sqlalchemy-utils==0.32.8
 psycopg2==2.6.1
 passlib==1.6.5
 itsdangerous==0.24
 sampledata==0.3.7
-
+arrow==0.8.0

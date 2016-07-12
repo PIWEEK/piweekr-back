@@ -1,6 +1,6 @@
 from sampledata.helper import SampleData
 
-from datetime import date, datetime, timedelta
+import arrow
 import random
 import uuid
 
@@ -51,7 +51,7 @@ class SampleData():
                 title=self.sd.words(5, 10).capitalize(),
                 description=self.sd.paragraphs(2, 4),
                 owner_id=random.choice(self.user_ids),
-                created_at=self.sd.past_datetime(),
+                created_at=arrow.get(self.sd.past_datetime()),
                 is_public=self.sd.boolean(),
                 forked_from=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
             )

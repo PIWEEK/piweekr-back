@@ -93,6 +93,12 @@ class DateTimeField(Field):
         super().__init__(type=datetime, *args, **kwargs)
 
 
+class ArrowDateTimeField(Field):
+    def __init__(self, *args, **kwargs):
+        from arrow import arrow
+        super().__init__(type=arrow.Arrow, *args, **kwargs)
+
+
 class ADTID(ADT):
     id = IntField(null=True)
 
