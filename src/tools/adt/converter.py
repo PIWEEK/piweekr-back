@@ -72,7 +72,7 @@ ObjectConverter.register(arrow.arrow.Arrow, ArrowConverter)
 
 
 class ADTConverter(ObjectConverter):
-    def to_plain(self, the_object, ignore_fields=[], follow_relationships=True):
+    def to_plain(self, the_object, ignore_fields=[], follow_relationships=False):
         d = {}
         for field_name, field in the_object._fields.items():
             if not field_name in ignore_fields:

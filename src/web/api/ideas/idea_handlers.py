@@ -9,7 +9,7 @@ from tools.adt.converter import to_plain, from_plain
 def list_ideas(request):
     # ideas = idea_actions.list_ideas()
     # return responses.Ok([
-    #     to_plain(idea, ignore_fields=["id"])
+    #     to_plain(idea, ignore_fields=["id"], follow_relationships=True)
     #     for idea in ideas
     # ])
 
