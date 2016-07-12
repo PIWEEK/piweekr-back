@@ -93,7 +93,7 @@ class SQLADTRepository:
         )
         return [the_class(**row) for row in rows]
 
-    def retrieve_joined_adts(self, context, classes, select):
+    def retrieve_joined_adts(self, context, main_class, classes, select):
         rows = self.conn.select_rows(
             context.session,
             dict,
@@ -102,14 +102,14 @@ class SQLADTRepository:
 
         adts = []
         for row in rows:
-            for i, (name, the_class) in enumerate(classes.items()):
+            for name, the_class in classes.items():
                 data = {}
                 for key, value in row.items():
                     if key.startswith(name):
                         data[key[len(name)+1:]] = value
                 instance = the_class(**data)
                 context.add(instance)
-                if i == 0:
+                if the_class == main_class:
                     if not instance.id in [adt.id for adt in adts]:
                         adts.append(instance)
 

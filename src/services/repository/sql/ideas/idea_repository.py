@@ -2,6 +2,7 @@ from sqlalchemy.sql import select, outerjoin
 from tools.adt.adt_sql import SQLADTRepository
 
 from core.ideas import idea_entities
+from core.users import user_entities
 
 from services.repository.sql import repo
 
@@ -16,10 +17,13 @@ def create(idea):
 
 def list():
     with repo.context() as context:
-        ideas = repo.retrieve_adts(context,
-            idea_entities.Idea,
-            select([repo.ideas])
-                .order_by("title")
+        ideas = repo.retrieve_joined_adts(context,
+            idea_entities.Idea, {"ideas": idea_entities.Idea, "users": user_entities.User},
+            select([repo.ideas, repo.users], use_labels=True)
+                .select_from(outerjoin(
+                    repo.ideas, repo.users, repo.ideas.c.owner_id == repo.users.c.id
+                ))
+                .order_by(repo.ideas.c.title)
         )
     return ideas
 

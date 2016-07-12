@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from tools.adt.types import ADTID, StrField, IntField, BoolField, ArrowDateTimeField
+from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
 
 class Idea(ADTID):
@@ -11,3 +12,11 @@ class Idea(ADTID):
     created_at = ArrowDateTimeField()
     is_public = BoolField()
     forked_from = IntField(null=True)
+
+
+from core.users import user_entities
+
+class IdeaHasOwner(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
+    role_n = RoleMulti(role_class=Idea, role_name="ideas", role_fk="owner_id", required=True)
+

@@ -32,6 +32,7 @@ def test_sql_persistence():
     repo.add_adt_table(Card, "cards")
     repo.add_adt_table(Deck, "decks")
     repo.create_all_tables()
+    repo.truncate_all_tables()
 
     with repo.context() as context:
 
@@ -84,7 +85,7 @@ def test_sql_persistence():
 
     with repo.context() as context:
         r_decks = repo.retrieve_joined_adts(context,
-            {"decks": Deck, "cards": Card},
+            Deck, {"decks": Deck, "cards": Card},
             select([repo.decks, repo.cards], use_labels=True)
                 .select_from(outerjoin(
                     repo.decks, repo.cards, repo.decks.c.id == repo.cards.c.deck_id

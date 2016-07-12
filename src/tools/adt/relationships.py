@@ -40,10 +40,26 @@ class Context:
         self._storage = {}
 
     def add(self, instance):
-        class_name = instance.__class__
-        if not self._storage.get(class_name):
-            self._storage[class_name] = {}
-        self._storage[class_name][instance.id] = instance
+        the_class = instance.__class__
+        if not self._storage.get(the_class):
+            self._storage[the_class] = {}
+        self._storage[the_class][instance.id] = instance
+
+        if hasattr(the_class, "_relationships"):
+            for relationship in the_class._relationships.values():
+                if issubclass(relationship, Relationship1N):
+                    if the_class == relationship.role_1.role_class:
+                        foreign_instances = getattr(self, relationship.role_n.role_name)(instance)
+                        instance.__dict__[relationship.role_n.role_name] = foreign_instances
+                        for foreign_instance in foreign_instances:
+                            foreign_instance.__dict__[relationship.role_1.role_name] = instance
+                    if the_class == relationship.role_n.role_class:
+                        foreign_instance = getattr(self, relationship.role_1.role_name)(instance)
+                        instance.__dict__[relationship.role_1.role_name] = foreign_instance
+                        if foreign_instance:
+                            if not hasattr(foreign_instance, relationship.role_n.role_name):
+                                foreign_instance.__dict__[relationship.role_n.role_name] = []
+                            foreign_instance.__dict__[relationship.role_n.role_name].append(instance)
 
     def __getattr__(self, attr_name):
         return partial(_get_related, self, attr_name)
@@ -68,15 +84,21 @@ def _get_related(context, role_name, instance):
 def _get_related_1(context, role_1, role_n, instance):
     foreign_class = role_1.role_class
     foreign_key = getattr(instance, role_n.role_fk)
-    foreign_instance = context._storage[foreign_class][foreign_key]
+    if foreign_class in context._storage:
+        foreign_instance = context._storage[foreign_class][foreign_key]
+    else:
+        foreign_instance = None
     return foreign_instance
 
 
 def _get_related_n(context, role_n, role_1, instance):
     foreign_class = role_n.role_class
-    foreign_instances = context._storage[foreign_class].values()
-    return [
-        i for i in foreign_instances
-        if getattr(i, role_n.role_fk) == instance.id
-    ]
+    if foreign_class in context._storage:
+        foreign_instances = context._storage[foreign_class].values()
+        return [
+            i for i in foreign_instances
+            if getattr(i, role_n.role_fk) == instance.id
+        ]
+    else:
+        return []
 

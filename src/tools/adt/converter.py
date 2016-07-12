@@ -35,27 +35,6 @@ class IdentityConverter(ObjectConverter):
         return plain_data
 
 
-class ADTConverter(ObjectConverter):
-    def to_plain(self, the_object, ignore_fields=[]):
-        d = {}
-        for field_name, field in the_object._fields.items():
-            if not field_name in ignore_fields:
-                value = getattr(the_object, field_name)
-                converter = ObjectConverter.get(type(value))
-                d[field_name] = converter.to_plain(value)
-        return d
-
-    def from_plain(self, the_type, plain_data):
-        d = {}
-        for field_name, field in the_type._fields.items():
-            value = plain_data.get(field_name, None)
-            converter = ObjectConverter.get(field.type)
-            d[field_name] = converter.from_plain(field.type, value)
-        return the_type(**d)
-
-ObjectConverter.register(ADT, ADTConverter)
-
-
 from datetime import date, datetime
 
 class DateConverter(ObjectConverter):
@@ -90,4 +69,29 @@ class ArrowConverter(ObjectConverter):
         return arrow.get(plain_data)
 
 ObjectConverter.register(arrow.arrow.Arrow, ArrowConverter)
+
+
+class ADTConverter(ObjectConverter):
+    def to_plain(self, the_object, ignore_fields=[], follow_relationships=True):
+        d = {}
+        for field_name, field in the_object._fields.items():
+            if not field_name in ignore_fields:
+                value = getattr(the_object, field_name)
+                converter = ObjectConverter.get(type(value))
+                d[field_name] = converter.to_plain(value)
+        if follow_relationships:
+            if hasattr(the_object, "_relationships"):
+                for role_name, rel_class in the_object._relationships.items():
+                    d[role_name] = to_plain(getattr(the_object, role_name), follow_relationships=False)
+        return d
+
+    def from_plain(self, the_type, plain_data):
+        d = {}
+        for field_name, field in the_type._fields.items():
+            value = plain_data.get(field_name, None)
+            converter = ObjectConverter.get(field.type)
+            d[field_name] = converter.from_plain(field.type, value)
+        return the_type(**d)
+
+ObjectConverter.register(ADT, ADTConverter)
 
