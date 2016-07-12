@@ -26,7 +26,7 @@ def list_ideas(request):
             "is_public": True,
             "forked_from": None,
             "comments_count": 3,
-            "reactions_counts": {"+1": 3, "smile": 10},
+            "reactions_counts": {"thumbsup": 3, "dancer": 10},
         },
         {
             "uuid": "9adfsnansyhr234hor283",
@@ -66,7 +66,7 @@ def list_ideas(request):
             "is_public": True,
             "forked_from": None,
             "comments_count": 10,
-            "reactions_counts": {"smile": 7, "heart": 1},
+            "reactions_counts": {"dancer": 7, "confused": 1},
         },
     ])
 
