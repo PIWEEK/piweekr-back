@@ -72,17 +72,20 @@ ObjectConverter.register(arrow.arrow.Arrow, ArrowConverter)
 
 
 class ADTConverter(ObjectConverter):
-    def to_plain(self, the_object, ignore_fields=[], follow_relationships=False):
+    def to_plain(self, the_object, only_fields=[], ignore_fields=[], relationships={}):
         d = {}
+
         for field_name, field in the_object._fields.items():
-            if not field_name in ignore_fields:
-                value = getattr(the_object, field_name)
-                converter = ObjectConverter.get(type(value))
-                d[field_name] = converter.to_plain(value)
-        if follow_relationships:
-            if hasattr(the_object, "_relationships"):
-                for role_name, rel_class in the_object._relationships.items():
-                    d[role_name] = to_plain(getattr(the_object, role_name), follow_relationships=False)
+            if not only_fields or field_name in only_fields:
+                if not field_name in ignore_fields:
+                    value = getattr(the_object, field_name)
+                    converter = ObjectConverter.get(type(value))
+                    d[field_name] = converter.to_plain(value)
+
+        for role_name, options in relationships.items():
+            foreign_object = getattr(the_object, role_name)
+            d[role_name] = to_plain(foreign_object, **options) if foreign_object else None
+
         return d
 
     def from_plain(self, the_type, plain_data):
