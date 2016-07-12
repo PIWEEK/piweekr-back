@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tools.adt.types import ADTID, StrField, IntField, BoolField, ArrowDateTimeField
+from tools.adt.types import ADTID, Field, StrField, IntField, BoolField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
 
@@ -12,6 +12,8 @@ class Idea(ADTID):
     created_at = ArrowDateTimeField()
     is_public = BoolField()
     forked_from = IntField(null=True)
+    comments_count = IntField()
+    reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
 
 
 from core.users import user_entities

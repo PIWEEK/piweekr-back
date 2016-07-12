@@ -46,6 +46,12 @@ class SampleData():
 
     def make_ideas(self):
         for i in range(50):
+
+            emojis = ["thumbsup", "dancer", "confused"]
+            reactions_counts = {}
+            for j in range(self.sd.int(0, 3)):
+                reactions_counts[random.choice(emojis)] = self.sd.int(0, 10)
+
             idea = idea_entities.Idea(
                 uuid=uuid.uuid4().hex,
                 title=self.sd.words(5, 10).capitalize(),
@@ -54,6 +60,8 @@ class SampleData():
                 created_at=arrow.get(self.sd.past_datetime()),
                 is_public=self.sd.boolean(),
                 forked_from=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
+                comments_count=self.sd.int(0, 20),
+                reactions_counts= reactions_counts,
             )
             idea = idea_repository.create(idea)
             self.idea_ids.append(idea.id)

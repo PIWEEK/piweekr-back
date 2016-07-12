@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import Column
-from sqlalchemy.sql import select, outerjoin
+from sqlalchemy.sql import select
 from sqlalchemy.dialects.postgresql import JSONB
 
 from tools.adt.adt_sql import SQLADTRepository
