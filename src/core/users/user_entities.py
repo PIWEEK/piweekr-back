@@ -13,5 +13,5 @@ class User(ADTID):
     password = StrField()
     full_name = StrField()
     email = StrField()
-    avatar = Field(type=dict) # Format: {<section>: <icon>} where section = "head"|"body"|"legs" and value is [1-10]
+    avatar = Field(type=dict) # Format: {<section>: <icon>} where section = "head"|"body"|"legs"|"background" and value is [1-10], background must be a valid html color
 

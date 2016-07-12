@@ -12,6 +12,10 @@ from services.repository.sql.users import user_repository
 from services.repository.sql.ideas import idea_repository
 
 
+sample_colors = ["#FC8EAC", "#A5694F", "#002e33", "#67CF00", "#71A6D2", "#FFF8E7", "#4B0082", "#007000",
+ 		 "#40826D", "#708090", "#761CEC", "#0F0F0F", "#D70A53", "#CC0000", "#FFCC00", "#FFFF00",
+		 "#C0FF33", "#B6DA55", "#2099DB"]
+
 class SampleData():
     sd = SampleData(seed=1234567890)
 
@@ -39,6 +43,7 @@ class SampleData():
                     "head": self.sd.int(1, 10),
                     "body": self.sd.int(1, 10),
                     "legs": self.sd.int(1, 10),
+                    "background": self.sd.choice(sample_colors),
                 }
             )
             user = user_repository.create(user)

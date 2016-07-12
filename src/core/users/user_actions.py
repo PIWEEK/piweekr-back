@@ -16,6 +16,7 @@ def register_new_user(user_for_register):
             "head": 1,
             "body": 1,
             "legs": 1,
+            "background": "#fabada"
         }
     )
 
