@@ -14,3 +14,12 @@ def create(idea):
     return idea
 
 
+def list():
+    with repo.context() as context:
+        ideas = repo.retrieve_adts(context,
+            idea_entities.Idea,
+            select([repo.ideas])
+                .order_by("title")
+        )
+    return ideas
+

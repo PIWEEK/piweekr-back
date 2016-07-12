@@ -55,3 +55,39 @@ class ADTConverter(ObjectConverter):
 
 ObjectConverter.register(ADT, ADTConverter)
 
+
+from datetime import date, datetime
+
+class DateConverter(ObjectConverter):
+    def to_plain(self, the_object):
+        return the_object.isoformat()
+
+    def from_plain(self, the_type, plain_data):
+        datetime = datetime.strptime(plain_data, "%Y-%m-%d")
+        return date(datetime.year, datetime.month, datetime.day)
+
+ObjectConverter.register(date, DateConverter)
+
+
+class DateTimeConverter(ObjectConverter):
+    def to_plain(self, the_object):
+        return the_object.isoformat()
+
+    def from_plain(self, the_type, plain_data):
+        # this is problematic, see http://stackoverflow.com/questions/127803/how-to-parse-an-iso-8601-formatted-date-in-python
+        return datetime.strptime(plain_data, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+ObjectConverter.register(datetime, DateTimeConverter)
+
+
+import arrow
+
+class ArrowConverter(ObjectConverter):
+    def to_plain(self, the_object):
+        return the_object.isoformat()
+
+    def from_plain(self, the_type, plain_data):
+        return arrow.get(plain_data)
+
+ObjectConverter.register(arrow.arrow.Arrow, ArrowConverter)
+

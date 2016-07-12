@@ -7,6 +7,12 @@ from tools.adt.converter import to_plain, from_plain
 
 # @login_required
 def list_ideas(request):
+    ideas = idea_actions.list_ideas()
+    return responses.Ok([
+        to_plain(idea, ignore_fields=["id"])
+        for idea in ideas
+    ])
+
     return responses.Ok([
         {
             "uuid": "q8h89asdhfb93c8b9",
