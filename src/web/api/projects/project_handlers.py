@@ -7,11 +7,15 @@ from tools.adt.converter import to_plain, from_plain
 
 # @login_required
 def list_projects(request):
-    # projects = project_actions.list_projects()
-    # return responses.Ok([
-    #     to_plain(project, ignore_fields=["id"])
-    #     for project in projects
-    # ])
+    #projects = project_actions.list_projects()
+    #return responses.Ok([
+    #    to_plain(project, ignore_fields=["id"],
+    #        relationships = {
+    #            "owner": {"ignore_fields": ["id", "password"]},
+    #        }
+    #    )
+    #    for project in projects
+    #])
 
     return responses.Ok([
         {
