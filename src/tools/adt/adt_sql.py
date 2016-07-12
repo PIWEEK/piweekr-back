@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Float, ForeignKey, Boolean, Text
+from sqlalchemy import Column, Integer, String, Date, DateTime, Float, ForeignKey, Boolean, Text
 from contextlib import contextmanager
 
 from tools.sql.sql_connection import SQLConnection
@@ -46,6 +46,8 @@ class SQLADTRepository:
             column_type = Float
         elif field.type == datetime.date:
             column_type = Date
+        elif field.type == datetime.datetime:
+            column_type = DateTime
         elif field.type == bool:
             column_type = Boolean
         else:
@@ -55,6 +57,9 @@ class SQLADTRepository:
 
     def create_all_tables(self):
         return self.conn.create_all_tables()
+
+    def truncate_all_tables(self):
+        return self.conn.truncate_all_tables()
 
     def insert_adt(self, context, table, instance):
         values = to_plain(instance)

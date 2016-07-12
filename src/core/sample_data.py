@@ -1,20 +1,29 @@
 from sampledata.helper import SampleData
 
+from datetime import date, datetime, timedelta
+import random
+import uuid
+
 from .users import user_entities
+from .ideas import idea_entities
+
+from services.repository.sql import repo
 from services.repository.sql.users import user_repository
+from services.repository.sql.ideas import idea_repository
 
 
 class SampleData():
     sd = SampleData(seed=1234567890)
 
     def run(self):
-        # Skip sample data if there are already some data
-        user_1 = user_repository.retrieve_by_user_name('user-1')
-        if user_1:
-            return
+        repo.truncate_all_tables()
+
+        self.user_ids = []
+        self.idea_ids = []
 
         print("Generating sample data...")
         self.make_users()
+        self.make_ideas()
         print("Done.")
 
     def make_users(self):
@@ -28,5 +37,20 @@ class SampleData():
                 email=self.sd.word() + '@piweekr.org',
                 avatar=None,
             )
-            user_repository.create(user)
+            user = user_repository.create(user)
+            self.user_ids.append(user.id)
+
+    def make_ideas(self):
+        for i in range(50):
+            idea = idea_entities.Idea(
+                uuid=uuid.uuid4().hex,
+                title=self.sd.words(5, 10).capitalize(),
+                description=self.sd.paragraphs(2, 4),
+                owner_id=random.choice(self.user_ids),
+                created_at=self.sd.past_datetime(),
+                is_public=self.sd.boolean(),
+                forked_from=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
+            )
+            idea = idea_repository.create(idea)
+            self.idea_ids.append(idea.id)
 

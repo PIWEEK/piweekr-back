@@ -3,12 +3,9 @@ from tools.adt.adt_sql import SQLADTRepository
 
 from core.users import user_entities
 
-import settings
-
-repo = SQLADTRepository(settings.DB_OPTIONS)
+from services.repository.sql import repo
 
 repo.add_adt_table(user_entities.User, "users")
-repo.create_all_tables()
 
 
 def create(user):

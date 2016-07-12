@@ -9,6 +9,8 @@ sys.path.append(SRC_DIR)
 
 from core.users import user_entities
 from core.users import user_actions
+from core.ideas import idea_entities
+from core.ideas import idea_actions
 # from core import exceptions
 
 
@@ -24,6 +26,17 @@ def runserver():
     """
     from web.server import runserver
     runserver()
+
+
+@cli.command()
+def db_init():
+    """
+    Creates all tables if needed, and empty the database.
+    """
+    from services.repository.sql import repo
+    repo.create_all_tables()
+    repo.truncate_all_tables()
+    print("Database initialized and cleared.")
 
 
 @cli.command()

@@ -76,6 +76,23 @@ class FloatField(Field):
         super().__init__(type=float, *args, **kwargs)
 
 
+class BoolField(Field):
+    def __init__(self, *args, **kwargs):
+        super().__init__(type=bool, *args, **kwargs)
+
+
+class DateField(Field):
+    def __init__(self, *args, **kwargs):
+        from datetime import date
+        super().__init__(type=date, *args, **kwargs)
+
+
+class DateTimeField(Field):
+    def __init__(self, *args, **kwargs):
+        from datetime import datetime
+        super().__init__(type=datetime, *args, **kwargs)
+
+
 class ADTID(ADT):
     id = IntField(null=True)
 

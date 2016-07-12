@@ -51,6 +51,12 @@ class SQLConnection:
     def create_all_tables(self):
         self._metadata.create_all(self._engine)
 
+    def truncate_all_tables(self):
+        with self.session() as session:
+            for attr in self.__dict__.values():
+                if isinstance(attr, Table):
+                    self.truncate_table(session, attr)
+
     def truncate_table(self, session, table):
         session.conn.execute("TRUNCATE TABLE {} CASCADE".format(table.name))
 

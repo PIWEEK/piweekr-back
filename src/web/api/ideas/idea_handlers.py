@@ -1,6 +1,6 @@
 from anillo.http import responses
 
-# from core.ideas import idea_actions
+from core.ideas import idea_actions
 
 from tools.adt.converter import to_plain, from_plain
 

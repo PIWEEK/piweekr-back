@@ -1,4 +1,4 @@
-from tools.adt.types import ADTID, Field, StrField, IntField
+from tools.adt.types import ADTID, StrField, IntField
 
 
 class UserForRegister(ADTID):
