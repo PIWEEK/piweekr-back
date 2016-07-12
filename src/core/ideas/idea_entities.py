@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from tools.adt.types import ADTID, StrField, IntField, BoolField, ArrowDateTimeField
 
 
@@ -9,4 +11,3 @@ class Idea(ADTID):
     created_at = ArrowDateTimeField()
     is_public = BoolField()
     forked_from = IntField(null=True)
-
