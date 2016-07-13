@@ -77,6 +77,21 @@ class SQLADTRepository:
         instance.attach(inserted_id)
         return instance
 
+    def update_adt(self, context, table, instance):
+        values = to_plain(instance)
+        row_count = self.conn.update_table(
+            context.session,
+            update(table).values(values).where(table.c.id == instance.id)
+        )
+        return row_count
+
+    def delete_adt(self, context, table, instance):
+        row_count = self.conn.delete_from_table(
+            context.session,
+            delete(table).where(table.c.id == instance.id)
+        )
+        return row_count
+
     def retrieve_single_adt(self, context, the_class, select):
         row = self.conn.select_single_row(
             context.session,
