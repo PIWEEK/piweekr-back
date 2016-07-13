@@ -30,7 +30,7 @@ from core.ideas import idea_entities
 
 class ProjectIsFromIdea(Relationship1N):
     role_1 = RoleSingle(role_class=idea_entities.Idea, role_name="idea_from")
-    role_n = RoleMulti(role_class=Project, role_name="project", role_fk="idea_from_id", required=True)
+    role_n = RoleMulti(role_class=Project, role_name="projects", role_fk="idea_from_id", required=True)
 
 
 # TODO:

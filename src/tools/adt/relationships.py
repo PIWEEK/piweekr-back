@@ -85,7 +85,7 @@ def _get_related_1(context, role_1, role_n, instance):
     foreign_class = role_1.role_class
     foreign_key = getattr(instance, role_n.role_fk)
     if foreign_class in context._storage:
-        foreign_instance = context._storage[foreign_class][foreign_key]
+        foreign_instance = context._storage[foreign_class].get(foreign_key)
     else:
         foreign_instance = None
     return foreign_instance
