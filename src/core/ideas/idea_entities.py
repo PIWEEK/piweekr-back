@@ -80,6 +80,19 @@ class IdeaInvitedValidator(v.Validator):
 ## Coment
 #######################################
 
+class IdeaCommentForCreate(ADTID):
+    content = StrField()
+
+
+class IdeaCommentForCreateValidator(v.Validator):
+    schema = b.schema({
+        "content": b.And(
+            t.String(),
+            s.NotEmpty(),
+        )
+    })
+
+
 class IdeaComment(ADTID):
     uuid = StrField()
     content = StrField()

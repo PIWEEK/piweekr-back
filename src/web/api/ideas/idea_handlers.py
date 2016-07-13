@@ -111,7 +111,20 @@ class IdeaComentsList(Handler):
 
     @login_required
     def post(self, request, idea_uuid):
-        raise NotImplementedError("TODO")
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        validator = idea_entities.IdeaCommentForCreateValidator(request.body)
+        if validator.is_valid():
+            comment = idea_actions.create_comment(
+                request.user,
+                idea,
+                idea_entities.IdeaCommentForCreate(**validator.cleaned_data)
+            )
+            return responses.Ok(to_plain(comment, ignore_fields=["id"]))
+        else:
+            return responses.BadRequest(validator.errors)
 
     @login_required
     def delete(self, request, idea_uuid):

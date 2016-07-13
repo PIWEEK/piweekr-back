@@ -65,14 +65,16 @@ def list_invited(idea):
 ## Coment
 #######################################
 
-def create_comment(owner, idea,  coment_for_create):
-    comment = idea_entities.IdeaComent(
+def create_comment(owner, idea,  comment_for_create):
+    # TODO: validate if the idea is public or if the owner is invited
+    comment = idea_entities.IdeaComment(
         uuid = uuid.uuid4().hex,
         content = comment_for_create.content,
         owner_id = owner.id,
         idea_id = idea.id,
         created_at = arrow.now(),
     )
+    # TODO: increase comment counts in the idea
     return idea_repository.create_comment(comment)
 
 
