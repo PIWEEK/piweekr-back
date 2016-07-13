@@ -46,6 +46,7 @@ class SampleData():
 
     def make_users(self):
         from tools.password import generate_hash
+
         for i in range(10):
             user_name = "user-{}".format(i + 1)
             user = user_entities.User(
@@ -62,6 +63,7 @@ class SampleData():
             )
             user = user_repository.create(user)
             self.user_ids.append(user.id)
+            print("User '{}' created.".format(user.email))
 
     def make_ideas(self):
         for i in range(50):
@@ -78,6 +80,18 @@ class SampleData():
             )
             idea = idea_repository.create(idea)
             self.idea_ids.append(idea.id)
+            print("Idea '{}' created.".format(idea.uuid))
+
+            for j in range(idea.comments_count):
+                comment = idea_entities.IdeaComment(
+                    uuid=uuid.uuid4().hex,
+                    content=self.sd.paragraphs(1, 3),
+                    owner_id=random.choice(self.user_ids),
+                    idea_id=idea.id,
+                    created_at=arrow.get(self.sd.past_datetime()),
+                )
+                idea_repository.create_comment(comment)
+                print("Comment '{}' created.".format(comment.uuid))
 
             if not idea.is_public:
                 if self.sd.int(1, 3) == 1:

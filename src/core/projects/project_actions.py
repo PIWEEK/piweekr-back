@@ -19,7 +19,7 @@ def create_new_project(project_for_create):
         owner_id = project_for_create.owner_id,
         created_at = arrow.utcnow(),
         comments_count=0,
-        reactions_counts={},
+        reactions_counts={}
     )
 
     return project_repository.create(project)

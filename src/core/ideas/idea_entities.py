@@ -10,6 +10,10 @@ from tools import validator as v
 from core.users import user_entities
 
 
+#######################################
+## Idea
+#######################################
+
 class IdeaForCreate(ADTID):
     title = StrField()
     description = StrField()
@@ -47,6 +51,10 @@ class IdeaHasOwner(Relationship1N):
     role_n = RoleMulti(role_class=Idea, role_name="ideas", role_fk="owner_id", required=True)
 
 
+#######################################
+## Inviteds
+#######################################
+
 class IdeaInvited(ADTID):
     idea_id = IntField()
     user_id = IntField()
@@ -61,3 +69,24 @@ class IdeaInvitedHasUser(Relationship1N):
     role_1 = RoleSingle(role_class=user_entities.User, role_name="user")
     role_n = RoleMulti(role_class=IdeaInvited, role_name="ideas_invited", role_fk="user_id", required=True)
 
+
+#######################################
+## Coment
+#######################################
+
+class IdeaComment(ADTID):
+    uuid = StrField()
+    content = StrField()
+    owner_id = IntField()
+    idea_id = IntField()
+    created_at = ArrowDateTimeField()
+
+
+class IdeaComentHasOwner(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
+    role_n = RoleMulti(role_class=IdeaComment, role_name="idea_comments", role_fk="owner_id", required=True)
+
+
+class IdeaComentFromIdea(Relationship1N):
+    role_1 = RoleSingle(role_class=Idea, role_name="idea")
+    role_n = RoleMulti(role_class=IdeaComment, role_name="comments", role_fk="idea_id", required=True)

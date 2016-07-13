@@ -7,6 +7,10 @@ import uuid
 import arrow
 
 
+#######################################
+## Idea
+#######################################
+
 def create_idea(owner, idea_for_create):
     idea = idea_entities.Idea(
         uuid = uuid.uuid4().hex,
@@ -33,3 +37,22 @@ def get_idea(idea_uuid):
 def list_invited(idea):
     return idea_repository.retrieve_invited_list(idea.id)
 
+
+#######################################
+## Coment
+#######################################
+
+def create_comment(owner, idea,  coment_for_create):
+    comment = idea_entities.IdeaComent(
+        uuid = uuid.uuid4().hex,
+        content = comment_for_create.content,
+        owner_id = owner.id,
+        idea_id = idea.id,
+        created_at = arrow.now(),
+    )
+    return idea_repository.create_comment(comment)
+
+
+def list_comments(idea):
+    comments = idea_repository.retrieve_comment_list(idea)
+    return comments

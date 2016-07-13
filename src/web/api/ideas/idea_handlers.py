@@ -5,9 +5,12 @@ from core.ideas import idea_entities, idea_actions
 from tools.adt.converter import to_plain, from_plain
 
 from web.handler import Handler
-
 from web.decorators import login_required
 
+
+#######################################
+## Idea
+#######################################
 
 class IdeasList(Handler):
     def get(self, request):
@@ -49,6 +52,10 @@ class IdeaDetail(Handler):
         raise NotImplementedError("TODO")
 
 
+#######################################
+## Invited
+#######################################
+
 class IdeaInvitedList(Handler):
     def get(self, request, idea_uuid):
         idea = idea_actions.get_idea(idea_uuid)
@@ -71,3 +78,31 @@ class IdeaInvitedList(Handler):
     def delete(self, request, idea_uuid):
         raise NotImplementedError("TODO")
 
+
+#######################################
+## Coment
+#######################################
+
+class IdeaComentsList(Handler):
+    def get(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        comments = idea_actions.list_comments(idea)
+        return responses.Ok([
+            to_plain(comment, ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            )
+            for comment in comments
+        ])
+
+    @login_required
+    def post(self, request, idea_uuid):
+        raise NotImplementedError("TODO")
+
+    @login_required
+    def delete(self, request, idea_uuid):
+        raise NotImplementedError("TODO")
