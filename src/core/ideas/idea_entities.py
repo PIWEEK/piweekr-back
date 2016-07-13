@@ -3,11 +3,29 @@
 from tools.adt.types import ADTID, Field, StrField, IntField, BoolField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
+from skame.schemas import types as t, strings as s, numeric as n, base as b
+from skame.exceptions import SchemaError
+from tools import validator as v
+
 
 class IdeaForCreate(ADTID):
     title = StrField()
     description = StrField()
     is_public = BoolField()
+
+
+class IdeaForCreateValidator(v.Validator):
+    schema = b.schema({
+        "title": b.And(
+            t.String(),
+            s.NotEmpty(),
+        ),
+        "description": b.And(
+            t.String(),
+            s.NotEmpty(),
+        ),
+        "is_public": t.Bool(),
+    })
 
 
 class Idea(ADTID):

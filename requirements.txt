@@ -11,3 +11,4 @@ passlib==1.6.5
 itsdangerous==0.24
 sampledata==0.3.7
 arrow==0.8.0
+-e git://github.com/kaleidos/skame.git#egg=skame

@@ -23,19 +23,13 @@ class IdeasList(Handler):
 
     @login_required
     def post(self, request):
-        # TODO validate body
-        title = request.body["title"]
-        description = request.body["description"]
-        is_public = request.body["is_public"]
-
-        idea = idea_actions.create_idea(
-            request.user,
-            idea_entities.IdeaForCreate(
-                title = title,
-                description = description,
-                is_public = is_public,
+        validator = idea_entities.IdeaForCreateValidator(request.body)
+        if validator.is_valid():
+            idea = idea_actions.create_idea(
+                request.user,
+                idea_entities.IdeaForCreate(**validator.cleaned_data)
             )
-        )
-
-        return responses.Ok(to_plain(idea, ignore_fields=["id"]))
+            return responses.Ok(to_plain(idea, ignore_fields=["id"]))
+        else:
+            return responses.BadRequest(validator.errors)
 

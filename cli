@@ -60,16 +60,20 @@ def create_user(user_name, password, full_name, email):
     """
     Register a new user in the system.
     """
-    user = user_actions.register_new_user(
-        user_entities.UserForRegister(
-            user_name = user_name,
-            clear_password = password,
-            full_name = full_name,
-            email = email,
+    validator = user_entities.UserForRegisterValidator({
+        "user_name": user_name,
+        "clear_password": password,
+        "full_name": full_name,
+        "email": email,
+    })
+    if validator.is_valid():
+        user = user_actions.register_new_user(
+            user_entities.UserForRegister(**validator.cleaned_data)
         )
-    )
-
-    print("Created user {}".format(user.user_name))
+        print("Created user {}".format(user.user_name))
+    else:
+        for key, error in validator.errors.items():
+            print("Error in {}: {}".format(key, error))
 
 
 if __name__ == "__main__":
