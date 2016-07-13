@@ -41,3 +41,7 @@ class UsersList(Handler):
             for user in users
         ])
 
+
+class UserMe(Handler):
+    def post(self, request):
+

@@ -70,8 +70,8 @@ class SampleData():
         for i in range(50):
             idea = idea_entities.Idea(
                 uuid=uuid.uuid4().hex,
-                title=self.sd.words(5, 10).capitalize(),
-                description=self.sd.paragraphs(2, 4),
+                title=self.sd.words(1, 4).capitalize(),
+                description=self.sd.paragraphs(1, 3),
                 owner_id=random.choice(self.user_ids),
                 created_at=arrow.get(self.sd.past_datetime()),
                 is_public=self.sd.boolean(),
@@ -113,10 +113,10 @@ class SampleData():
         for i in range(50):
             project = project_entities.Project(
                 uuid=uuid.uuid4().hex,
-                title=self.sd.words(5, 10).capitalize(),
-                description=self.sd.paragraphs(2, 4),
+                title=self.sd.words(1, 4).capitalize(),
+                description=self.sd.paragraphs(1, 3),
                 technologies=[self.sd.choice(sample_technologies) for i in range(self.sd.int(0, 5))],
-                needs=self.sd.paragraphs(2, 4),
+                needs=self.sd.paragraphs(1, 2),
                 logo=self.sd.choice(sample_logos),
                 piweek_id=1,
                 idea_from_id=random.choice(self.idea_ids),
