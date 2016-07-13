@@ -14,7 +14,7 @@ urls = [
     url(PREFIX + "/login", user_handlers.Login(), methods=["post"]),
     url(PREFIX + "/logout", user_handlers.Logout(), methods=["post"]),
     url(PREFIX + "/users", user_handlers.UsersList(), methods=["get"]),
-    url(PREFIX + "/users/<string:username>", user_handlers.UserDetail(), methods=["get", "put", "delete"]),
+    url(PREFIX + "/users/<string:username>", user_handlers.UserDetail(), methods=["get", "patch", "delete"]),
 
     # Ideas
     url(PREFIX + "/ideas",

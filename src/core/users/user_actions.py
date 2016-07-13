@@ -42,3 +42,17 @@ def list_users():
     users = user_repository.list()
     return users
 
+
+def update_user(user, updates):
+    if updates.username:
+        user.update_username(updates.username)
+    if updates.clear_password:
+        user.update_password(generate_hash(updates.clear_password))
+    if updates.full_name:
+        user.update_full_name(updates.full_name)
+    if updates.email:
+        user.update_email(updates.email)
+    if updates.avatar:
+        user.update_avatar(updates.avatar)
+
+    return user_repository.update(user)

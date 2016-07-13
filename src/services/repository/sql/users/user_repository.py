@@ -52,3 +52,8 @@ def retrieve_by_username(username):
         )
     return user
 
+
+def update(user):
+    with repo.context() as context:
+        repo.update_adt(context, repo.users, user)
+    return user
