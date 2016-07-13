@@ -44,4 +44,5 @@ class UsersList(Handler):
 
 class UserMe(Handler):
     def post(self, request):
+        pass
 
