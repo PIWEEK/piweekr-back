@@ -35,8 +35,7 @@ def list():
                 use_labels=True
             )
             .select_from(
-                join(
-                    repo.ideas,
+                repo.ideas.join(
                     repo.users,
                     repo.ideas.c.owner_id == repo.users.c.id
                 )
