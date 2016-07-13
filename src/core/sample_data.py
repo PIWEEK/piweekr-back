@@ -21,7 +21,8 @@ sample_colors = ["#FC8EAC", "#A5694F", "#002e33", "#67CF00", "#71A6D2", "#FFF8E7
 sample_technologies = ["python", "groovy", "c", "html", "css", "angualr", "cloujure", "cloujurescript", "IoT",
                        "music", "UX", "Design", "SASS", "CSS", "HTML", "PostCSS"]
 
-sample_emojis = ["thumbsup", "dancer", "confused", "dancers", "baby", "smile"]
+sample_emojis = ["smile", "thumbsdown", "thumbsup", "poo", "confused", "dancer", "beer"]
+
 
 sample_logos = ["http://createfunnylogo.com/blazed/MetanOR.jpg",
                 "http://createfunnylogo.com/logo/techcrunch/Virtual%20Gym.jpg",
