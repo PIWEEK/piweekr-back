@@ -43,12 +43,12 @@ def retrieve_by_id(user_id):
     return user
 
 
-def retrieve_by_user_name(user_name):
+def retrieve_by_username(username):
     with repo.context() as context:
         user = repo.retrieve_single_adt(context,
             user_entities.User,
             select([repo.users])
-                .where(repo.users.c.user_name == user_name)
+                .where(repo.users.c.username == username)
         )
     return user
 

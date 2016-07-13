@@ -10,11 +10,15 @@ from web.handler import Handler
 import settings
 
 
+#######################################
+## Auth
+#######################################
+
 class Login(Handler):
     def post(self, request):
-        user_name = request.body.get("user_name", "")
+        username = request.body.get("username", "")
         password = request.body.get("password", "")
-        user = user_actions.get_by_username_and_password(user_name, password)
+        user = user_actions.get_by_username_and_password(username, password)
         if not user:
             return responses.BadRequest({"error": "Invalid username or password"})
         else:
@@ -33,6 +37,10 @@ class Logout(Handler):
         return responses.Ok()
 
 
+#######################################
+## Users
+#######################################
+
 class UsersList(Handler):
     def get(self, request):
         users = user_actions.list_users()
@@ -42,7 +50,20 @@ class UsersList(Handler):
         ])
 
 
-class UserMe(Handler):
-    def post(self, request):
-        pass
+class UserDetail(Handler):
+    def get(self, request, username)
+        user = user_actions.get_user(username)
+        if not user:
+            return responses.NotFound()
 
+        if request.user.id == user.id
+            return responses.Ok(to_plain(user, ignore_fields=["id"]))
+        return responses.Ok(to_plain(user, ignore_fields=["id", "password"]))
+
+    def put(self, request, username):
+        user = user_actions.get_user(username)
+        if not idea:
+            return responses.NotFound()
+
+    def delete(self, request, username):
+        raise NotImplementedError("TODO")

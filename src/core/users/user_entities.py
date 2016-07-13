@@ -6,7 +6,7 @@ from tools import validator as v
 
 
 class UserForRegister(ADTID):
-    user_name = StrField()
+    username = StrField()
     clear_password = StrField()
     full_name = StrField()
     email = StrField()
@@ -14,7 +14,7 @@ class UserForRegister(ADTID):
 
 class UserForRegisterValidator(v.Validator):
     schema = b.schema({
-        "user_name": b.And(
+        "username": b.And(
             t.String(),
             s.NotEmpty(),
         ),
@@ -35,7 +35,7 @@ class UserForRegisterValidator(v.Validator):
 
 
 class User(ADTID):
-    user_name = StrField()
+    username = StrField()
     password = StrField()
     full_name = StrField()
     email = StrField()

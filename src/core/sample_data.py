@@ -49,9 +49,9 @@ class SampleData():
         from tools.password import generate_hash
 
         for i in range(10):
-            user_name = "user-{}".format(i + 1)
+            username = "user-{}".format(i + 1)
             user = user_entities.User(
-                user_name=user_name,
+                username=username,
                 password=generate_hash("123123"),
                 full_name=self.sd.fullname(locale='us'),
                 email=self.sd.word() + '@piweekr.org',

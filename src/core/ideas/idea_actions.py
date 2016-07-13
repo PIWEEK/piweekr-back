@@ -51,10 +51,10 @@ def invite_users(user, idea, invited_users):
     if idea.is_public:
         raise exceptions.InconsistentData("Only private ideas can have invited users")
 
-    for user_name in invited_users:
-        invited_user = user_repository.retrieve_by_user_name(user_name)
+    for username in invited_users:
+        invited_user = user_repository.retrieve_by_username(username)
         if not invited_user:
-            raise exceptions.InconsistentData("Can't find user {}".format(user_name))
+            raise exceptions.InconsistentData("Can't find user {}".format(username))
         if invited_user.id == user.id:
             raise exceptions.InconsistentData("You cannot invite yourself to the idea")
 

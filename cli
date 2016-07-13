@@ -52,16 +52,16 @@ def sample_data():
 
 
 @cli.command()
-@click.argument("user_name", nargs=1, type=click.STRING)
+@click.argument("username", nargs=1, type=click.STRING)
 @click.argument("password", nargs=1, type=click.STRING)
 @click.argument("full_name", nargs=1, type=click.STRING)
 @click.argument("email", nargs=1, type=click.STRING)
-def create_user(user_name, password, full_name, email):
+def create_user(username, password, full_name, email):
     """
     Register a new user in the system.
     """
     validator = user_entities.UserForRegisterValidator({
-        "user_name": user_name,
+        "username": username,
         "clear_password": password,
         "full_name": full_name,
         "email": email,
@@ -70,7 +70,7 @@ def create_user(user_name, password, full_name, email):
         user = user_actions.register_new_user(
             user_entities.UserForRegister(**validator.cleaned_data)
         )
-        print("Created user {}".format(user.user_name))
+        print("Created user {}".format(user.username))
     else:
         for key, error in validator.errors.items():
             print("Error in {}: {}".format(key, error))

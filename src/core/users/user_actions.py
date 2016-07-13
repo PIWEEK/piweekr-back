@@ -8,7 +8,7 @@ from . import user_entities
 
 def register_new_user(user_for_register):
     user = user_entities.User(
-        user_name = user_for_register.user_name,
+        username = user_for_register.username,
         password = generate_hash(user_for_register.clear_password),
         full_name = user_for_register.full_name,
         email = user_for_register.email,
@@ -26,8 +26,12 @@ def get_by_id(user_id):
     return user_repository.retrieve_by_id(user_id)
 
 
-def get_by_username_and_password(user_name, clear_password):
-    user = user_repository.retrieve_by_user_name(user_name)
+def get_by_username(username):
+    return user_repository.retrieve_by_username(username)
+
+
+def get_by_username_and_password(username, clear_password):
+    user = user_repository.retrieve_by_username(username)
     if user:
         if not verify_hash(clear_password, user.password):
             user = None
