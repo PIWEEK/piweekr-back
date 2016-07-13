@@ -23,6 +23,18 @@ def register_new_user(user_for_register):
     return user_repository.create(user)
 
 
+def get_by_id(user_id):
+    return user_repository.retrieve_by_id(user_id)
+
+
+def get_by_username_and_password(user_name, clear_password):
+    user = user_repository.retrieve_by_user_name(user_name)
+    if user:
+        if not verify_hash(clear_password, user.password):
+            user = None
+    return user
+
+
 def list_users():
     users = user_repository.list()
     return users

@@ -33,6 +33,16 @@ def list():
     return users
 
 
+def retrieve_by_id(user_id):
+    with repo.context() as context:
+        user = repo.retrieve_single_adt(context,
+            user_entities.User,
+            select([repo.users])
+                .where(repo.users.c.id == user_id)
+        )
+    return user
+
+
 def retrieve_by_user_name(user_name):
     with repo.context() as context:
         user = repo.retrieve_single_adt(context,
