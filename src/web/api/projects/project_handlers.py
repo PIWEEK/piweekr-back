@@ -5,6 +5,7 @@ from core.projects import project_actions
 from tools.adt.converter import to_plain, from_plain
 
 from web.handler import Handler
+from web.decorators import login_required
 
 
 #######################################
