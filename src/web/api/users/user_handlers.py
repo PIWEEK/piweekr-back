@@ -51,18 +51,18 @@ class UsersList(Handler):
 
 
 class UserDetail(Handler):
-    def get(self, request, username)
+    def get(self, request, username):
         user = user_actions.get_user(username)
         if not user:
             return responses.NotFound()
 
-        if request.user.id == user.id
+        if request.user.id == user.id:
             return responses.Ok(to_plain(user, ignore_fields=["id"]))
         return responses.Ok(to_plain(user, ignore_fields=["id", "password"]))
 
     def put(self, request, username):
         user = user_actions.get_user(username)
-        if not idea:
+        if not user:
             return responses.NotFound()
 
     def delete(self, request, username):
