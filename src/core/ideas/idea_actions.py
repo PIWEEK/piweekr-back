@@ -41,6 +41,10 @@ def get_idea(idea_uuid):
     return idea_repository.retrieve_by_uuid(idea_uuid)
 
 
+#######################################
+## Inviteds
+#######################################
+
 def invite_users(user, idea, invited_users):
     if idea.owner_id != user.id:
         raise exceptions.Forbidden("Only owner can invite users")
@@ -70,7 +74,11 @@ def list_invited(idea):
 #######################################
 
 def create_comment(owner, idea,  comment_for_create):
-    # TODO: validate if the idea is public or if the owner is invited
+    if not idea.is_public or idea.owner_id != owner.id:
+        invited = idea_repository.retrieve_invited_by_user_id(owner.id)
+        if not invited:
+            raise exceptions.Forbidden("Only invited users can comment")
+
     comment = idea_entities.IdeaComment(
         uuid = uuid.uuid4().hex,
         content = comment_for_create.content,

@@ -106,6 +106,20 @@ def retrieve_invited_list(idea_id):
     return invited
 
 
+def retrieve_invited_by_user_id(user_id):
+    with repo.context() as context:
+        idea = repo.retrieve_single_adt(
+            context,
+            idea_entities.Idea,
+            select(
+                [repo.ideas]
+            ).where(
+                repo.ideas.c.user_id == user_id
+            )
+        )
+    return idea
+
+
 #######################################
 ## Coment
 #######################################
@@ -133,8 +147,7 @@ def retrieve_comment_list(idea):
             select(
                 [repo.idea_comments, repo.ideas, repo.users],
                 use_labels=True
-            )
-            .select_from(
+            ).select_from(
                 repo.idea_comments.join(
                     repo.ideas,
                     repo.idea_comments.c.idea_id == repo.ideas.c.id
