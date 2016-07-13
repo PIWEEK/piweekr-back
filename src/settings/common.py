@@ -1,3 +1,5 @@
+DEBUG = True
+
 DB_OPTIONS = {
     "DB_HOST": "",
     "DB_NAME": "piweekr",

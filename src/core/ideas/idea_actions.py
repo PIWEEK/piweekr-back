@@ -1,5 +1,8 @@
 from tools.password import generate_hash, verify_hash
 from services.repository.sql.ideas import idea_repository
+from services.repository.sql.users import user_repository
+
+from core import exceptions
 
 from . import idea_entities
 
@@ -33,6 +36,23 @@ def list_ideas():
 def get_idea(idea_uuid):
     return idea_repository.retrieve_by_uuid(idea_uuid)
 
+
+def invite_users(user, idea, invited_users):
+    if idea.owner_id != user.id:
+        raise exceptions.Forbidden("Only owner can invite users")
+    if idea.is_public:
+        raise exceptions.InconsistentData("Only private ideas can have invited users")
+
+    for user_name in invited_users:
+        invited_user = user_repository.retrieve_by_user_name(user_name)
+        if not invited_user:
+            raise exceptions.InconsistentData("Can't find user {}".format(user_name))
+        idea_repository.create_invited(
+            idea_entities.IdeaInvited(
+                idea_id = idea.id,
+                user_id = invited_user.id,
+            )
+        )
 
 def list_invited(idea):
     return idea_repository.retrieve_invited_list(idea.id)

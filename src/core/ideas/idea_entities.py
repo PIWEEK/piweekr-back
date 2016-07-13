@@ -70,6 +70,12 @@ class IdeaInvitedHasUser(Relationship1N):
     role_n = RoleMulti(role_class=IdeaInvited, role_name="ideas_invited", role_fk="user_id", required=True)
 
 
+class IdeaInvitedValidator(v.Validator):
+    schema = b.schema({
+        "invited_users": t.List(),
+    })
+
+
 #######################################
 ## Coment
 #######################################
@@ -90,3 +96,4 @@ class IdeaComentHasOwner(Relationship1N):
 class IdeaComentFromIdea(Relationship1N):
     role_1 = RoleSingle(role_class=Idea, role_name="idea")
     role_n = RoleMulti(role_class=IdeaComment, role_name="comments", role_fk="idea_id", required=True)
+

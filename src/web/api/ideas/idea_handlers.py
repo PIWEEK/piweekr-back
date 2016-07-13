@@ -72,8 +72,18 @@ class IdeaInvitedList(Handler):
             for invited in invited_list
         ])
 
+    @login_required
     def post(self, request, idea_uuid):
-        raise NotImplementedError("TODO")
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        validator = idea_entities.IdeaInvitedValidator(request.body)
+        if validator.is_valid():
+            idea_actions.invite_users(request.user, idea, validator.cleaned_data["invited_users"])
+            return responses.Ok()
+        else:
+            return responses.BadRequest(validator.errors)
 
     def delete(self, request, idea_uuid):
         raise NotImplementedError("TODO")

@@ -13,7 +13,7 @@ def setup_application():
     from anillo.middlewares.params import wrap_query_params
     from anillo_auth.auth import wrap_auth
     from anillo_auth.backends.token import JWSBackend
-    from .middlewares import wrap_verify_user
+    from .middlewares import wrap_verify_user, wrap_error_handler
 
     from tools.camelize.middlewares import wrap_camelize_response_body
     from tools.camelize.middlewares import wrap_underscoreize_request_body
@@ -22,6 +22,7 @@ def setup_application():
 
     handler = chain(
         wrap_cors(allow_headers=list(DEFAULT_HEADERS) + ["x-session-id", "accept-language", "authorization"]),
+        wrap_error_handler,
         wrap_auth(backend=lambda: JWSBackend(secret=settings.SECRET_KEY, token_name="Bearer")),
         wrap_verify_user,
         wrap_json_body(),
