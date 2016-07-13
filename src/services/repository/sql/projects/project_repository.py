@@ -11,6 +11,10 @@ from core.users import user_entities
 from services.repository.sql import repo
 
 
+#######################################
+## Projects
+#######################################
+
 repo.add_adt_table(
     project_entities.Project,
     "projects",
@@ -67,3 +71,46 @@ def retrieve_by_title(title):
             select([repo.projects]).where(repo.projects.c.title == title)
         )
     return project
+
+
+#######################################
+## Coment
+#######################################
+
+repo.add_adt_table(
+    project_entities.ProjectComment,
+    "project_comments",
+)
+
+
+def create_comment(new_comment):
+    with repo.context() as context:
+        comment = repo.insert_adt(context, repo.project_comments, new_comment)
+    return comment
+
+
+def retrieve_comment_list(project):
+    with repo.context() as context:
+        comments = repo.retrieve_joined_adts(
+            context,
+            project_entities.ProjectComment,
+            {"project_comments": project_entities.ProjectComment,
+             "projects": project_entities.Project,
+             "users": user_entities.User},
+            select(
+                [repo.project_comments, repo.projects, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.project_comments.join(
+                    repo.projects,
+                    repo.project_comments.c.project_id == repo.projects.c.id
+                )
+                .join(
+                    repo.users,
+                    repo.project_comments.c.owner_id == repo.users.c.id
+                )
+            ).where(
+                repo.project_comments.c.project_id == project.id
+            ).order_by(repo.project_comments.c.created_at)
+        )
+    return comments

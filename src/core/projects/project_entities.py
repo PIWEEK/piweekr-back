@@ -3,6 +3,14 @@
 from tools.adt.types import ADTID, Field, StrField, IntField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
+from skame.schemas import types as t, strings as s, numeric as n, base as b
+from skame.exceptions import SchemaError
+from tools import validator as v
+
+
+#######################################
+## Project
+#######################################
 
 class Project(ADTID):
     uuid = StrField()
@@ -39,3 +47,39 @@ class ProjectIsFromIdea(Relationship1N):
 #class ProjectIsFromPiweek(Relationship11):
 #    role_from = RoleSingle(role_class=piweek_entities.Piweek, role_name="piweek")
 #    role_to = RoleDingle(role_class=Project, role_name="project", role_fk="piweek_id", required=True)
+
+
+#######################################
+## Coment
+#######################################
+
+class ProjectCommentForCreate(ADTID):
+    content = StrField()
+
+
+class ProjectCommentForCreateValidator(v.Validator):
+    schema = b.schema({
+        "content": b.And(
+            t.String(),
+            s.NotEmpty(),
+        )
+    })
+
+
+class ProjectComment(ADTID):
+    uuid = StrField()
+    content = StrField()
+    owner_id = IntField()
+    project_id = IntField()
+    created_at = ArrowDateTimeField()
+
+
+class ProjectComentHasOwner(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
+    role_n = RoleMulti(role_class=ProjectComment, role_name="project_comments", role_fk="owner_id", required=True)
+
+
+class ProjectComentFromProject(Relationship1N):
+    role_1 = RoleSingle(role_class=Project, role_name="project")
+    role_n = RoleMulti(role_class=ProjectComment, role_name="comments", role_fk="project_id", required=True)
+

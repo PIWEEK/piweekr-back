@@ -75,7 +75,7 @@ class SampleData():
                 created_at=arrow.get(self.sd.past_datetime()),
                 is_public=self.sd.boolean(),
                 forked_from=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
-                comments_count=self.sd.int(0, 20),
+                comments_count=self.sd.int(0, 10),
                 reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 10) for j in range(self.sd.int(0, 3))},
             )
             idea = idea_repository.create(idea)
@@ -85,7 +85,7 @@ class SampleData():
             for j in range(idea.comments_count):
                 comment = idea_entities.IdeaComment(
                     uuid=uuid.uuid4().hex,
-                    content=self.sd.paragraphs(1, 3),
+                    content=self.sd.long_sentence(),
                     owner_id=random.choice(self.user_ids),
                     idea_id=idea.id,
                     created_at=arrow.get(self.sd.past_datetime()),
@@ -121,9 +121,20 @@ class SampleData():
                 idea_from_id=random.choice(self.idea_ids),
                 owner_id=random.choice(self.user_ids),
                 created_at=arrow.get(self.sd.past_datetime()),
-                comments_count=self.sd.int(0, 20),
+                comments_count=self.sd.int(0, 10),
                 reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 10) for j in range(self.sd.int(0, 3))},
             )
             project = project_repository.create(project)
             self.project_ids.append(project.id)
+            print("Project '{}' created.".format(project.uuid))
 
+            for j in range(project.comments_count):
+                comment = project_entities.ProjectComment(
+                    uuid=uuid.uuid4().hex,
+                    content=self.sd.long_sentence(),
+                    owner_id=random.choice(self.user_ids),
+                    project_id=project.id,
+                    created_at=arrow.get(self.sd.past_datetime()),
+                )
+                project_repository.create_comment(comment)
+                print("Comment '{}' created.".format(comment.uuid))

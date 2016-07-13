@@ -70,7 +70,7 @@ def list_invited(idea):
 
 
 #######################################
-## Coment
+## Comment
 #######################################
 
 def create_comment(owner, idea,  comment_for_create):
