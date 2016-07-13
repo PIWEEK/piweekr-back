@@ -45,6 +45,13 @@ class Idea(ADTID):
     comments_count = IntField()
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
 
+    def increase_comment_count(self):
+        self.comments_count += 1
+
+    def decrease_comment_count(self):
+        if self.comments_count > 0:
+            self.comments_count -= 1
+
 
 class IdeaHasOwner(Relationship1N):
     role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")

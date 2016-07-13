@@ -29,6 +29,10 @@ def create_idea(owner, idea_for_create):
     return idea_repository.create(idea)
 
 
+def update_idea(owner, idea):
+    return idea_repository.update(idea)
+
+
 def list_ideas():
     return idea_repository.list()
 
@@ -74,7 +78,10 @@ def create_comment(owner, idea,  comment_for_create):
         idea_id = idea.id,
         created_at = arrow.now(),
     )
-    # TODO: increase comment counts in the idea
+
+    idea.increase_comment_count()
+    idea_repository.update(idea)
+
     return idea_repository.create_comment(comment)
 
 

@@ -29,6 +29,12 @@ def create(idea):
     return idea
 
 
+def update(idea):
+    with repo.context() as context:
+        idea = repo.update_adt(context, repo.ideas, idea)
+    return idea
+
+
 def list():
     with repo.context() as context:
         ideas = repo.retrieve_joined_adts(
