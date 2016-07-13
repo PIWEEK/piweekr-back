@@ -19,7 +19,6 @@ def register_new_user(user_for_register):
             "background": "#fabada"
         }
     )
-
     return user_repository.create(user)
 
 

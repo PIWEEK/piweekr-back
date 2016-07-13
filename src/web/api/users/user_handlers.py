@@ -12,7 +12,7 @@ import settings
 
 class Login(Handler):
     def post(self, request):
-        user_name = request.body.get("userName", "") # TODO qué pacha con el middleware de camelcase?
+        user_name = request.body.get("user_name", "")
         password = request.body.get("password", "")
         user = user_actions.get_by_username_and_password(user_name, password)
         if not user:

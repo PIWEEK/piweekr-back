@@ -4,6 +4,12 @@ from tools.adt.types import ADTID, Field, StrField, IntField, BoolField, ArrowDa
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
 
+class IdeaForCreate(ADTID):
+    title = StrField()
+    description = StrField()
+    is_public = BoolField()
+
+
 class Idea(ADTID):
     uuid = StrField()
     title = StrField()
