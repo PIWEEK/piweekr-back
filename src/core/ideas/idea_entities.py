@@ -77,9 +77,18 @@ class IdeaInvitedHasUser(Relationship1N):
     role_n = RoleMulti(role_class=IdeaInvited, role_name="ideas_invited", role_fk="user_id", required=True)
 
 
-class IdeaInvitedValidator(v.Validator):
+class IdeaAddInvitedValidator(v.Validator):
     schema = b.schema({
-        "invited_users": t.List(),
+        "invited_user_names": t.List(),
+    })
+
+
+class IdeaRemoveInvitedValidator(v.Validator):
+    schema = b.schema({
+        "invited_user_name": b.And(
+            t.String(),
+            s.NotEmpty(),
+        ),
     })
 
 

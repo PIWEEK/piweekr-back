@@ -78,15 +78,25 @@ class IdeaInvitedList(Handler):
         if not idea:
             return responses.NotFound()
 
-        validator = idea_entities.IdeaInvitedValidator(request.body)
+        validator = idea_entities.IdeaAddInvitedValidator(request.body)
         if validator.is_valid():
-            idea_actions.invite_users(request.user, idea, validator.cleaned_data["invited_users"])
+            idea_actions.invite_users(request.user, idea, validator.cleaned_data["invited_user_names"])
             return responses.Ok()
         else:
             return responses.BadRequest(validator.errors)
 
+    @login_required
     def delete(self, request, idea_uuid):
-        raise NotImplementedError("TODO")
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        validator = idea_entities.IdeaRemoveInvitedValidator(request.body)
+        if validator.is_valid():
+            idea_actions.remove_invited_user(request.user, idea, validator.cleaned_data["invited_user_name"])
+            return responses.Ok()
+        else:
+            return responses.BadRequest(validator.errors)
 
 
 #######################################

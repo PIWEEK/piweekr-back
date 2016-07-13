@@ -45,18 +45,21 @@ def get_idea(idea_uuid):
 ## Inviteds
 #######################################
 
-def invite_users(user, idea, invited_users):
+def invite_users(user, idea, invited_usernames):
     if idea.owner_id != user.id:
         raise exceptions.Forbidden("Only owner can invite users")
     if idea.is_public:
         raise exceptions.InconsistentData("Only private ideas can have invited users")
 
-    for username in invited_users:
-        invited_user = user_repository.retrieve_by_username(username)
+    for invited_username in invited_usernames:
+        invited_user = user_repository.retrieve_by_username(invited_username)
         if not invited_user:
-            raise exceptions.InconsistentData("Can't find user {}".format(username))
+            raise exceptions.InconsistentData("Can't find user {}".format(invited_username))
         if invited_user.id == user.id:
             raise exceptions.InconsistentData("You cannot invite yourself to the idea")
+        invited = idea_repository.retrieve_invited(idea.id, invited_user.id)
+        if invited:
+            raise exceptions.InconsistentData("User {} was already invited to the idea".format(invited_username))
 
         idea_repository.create_invited(
             idea_entities.IdeaInvited(
@@ -67,6 +70,23 @@ def invite_users(user, idea, invited_users):
 
 def list_invited(idea):
     return idea_repository.retrieve_invited_list(idea.id)
+
+
+def remove_invited_user(user, idea, invited_username):
+    if idea.owner_id != user.id:
+        raise exceptions.Forbidden("Only owner can invite users")
+    if idea.is_public:
+        raise exceptions.InconsistentData("Only private ideas can have invited users")
+
+    invited_user = user_repository.retrieve_by_username(invited_username)
+    if not invited_user:
+        raise exceptions.InconsistentData("Can't find user {}".format(invited_username))
+
+    invited = idea_repository.retrieve_invited(idea.id, invited_user.id)
+    if not invited:
+        raise exceptions.InconsistentData("User {} was not invited to the idea".format(invited_username))
+
+    idea_repository.delete_invited(invited)
 
 
 #######################################
