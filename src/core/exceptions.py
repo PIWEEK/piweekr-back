@@ -13,17 +13,6 @@ class CoreException(Exception):
         return self.message or "Internal error"
 
 
-class InvalidUser(CoreException):
-    """
-    You have tried to access with a nonexisting user id.
-    """
-    code = "invalid_user"
-
-    def __init__(self, field_name, field_value):
-        self.message = "Cannot find any user with {} {}".format(field_name, field_value)
-        super().__init__(self.message)
-
-
 class Forbidden(CoreException):
     """
     You don't have permission to do this operation.

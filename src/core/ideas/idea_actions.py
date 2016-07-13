@@ -47,6 +47,9 @@ def invite_users(user, idea, invited_users):
         invited_user = user_repository.retrieve_by_user_name(user_name)
         if not invited_user:
             raise exceptions.InconsistentData("Can't find user {}".format(user_name))
+        if invited_user.id == user.id:
+            raise exceptions.InconsistentData("You cannot invite yourself to the idea")
+
         idea_repository.create_invited(
             idea_entities.IdeaInvited(
                 idea_id = idea.id,

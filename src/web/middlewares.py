@@ -23,9 +23,6 @@ def wrap_error_handler(func):
         try:
             return func(request, *args, **kwargs)
 
-        except core_exceptions.InvalidUser as ex:
-            return responses.BadRequest(**_render_error(ex))
-
         except core_exceptions.Forbidden as ex:
             return responses.Forbidden(**_render_error(ex))
 
