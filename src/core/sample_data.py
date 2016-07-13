@@ -79,13 +79,28 @@ class SampleData():
             idea = idea_repository.create(idea)
             self.idea_ids.append(idea.id)
 
+            if not idea.is_public:
+                if self.sd.int(1, 3) == 1:
+                    excluded_ids = [idea.owner_id]
+                    for j in range(self.sd.int(1, 4)):
+                        while True:
+                            user_id = random.choice(self.user_ids)
+                            if not user_id in excluded_ids:
+                                excluded_ids.append(user_id)
+                                break
+                        invited = idea_entities.IdeaInvited(
+                            idea_id=idea.id,
+                            user_id=user_id,
+                        )
+                        invited = idea_repository.create_invited(invited)
+
     def make_projects(self):
         for i in range(50):
             project = project_entities.Project(
                 uuid=uuid.uuid4().hex,
                 title=self.sd.words(5, 10).capitalize(),
                 description=self.sd.paragraphs(2, 4),
-                technologies=[self.sd.choice(sample_technologies) for i in range(0, self.sd.int(0, 5))],
+                technologies=[self.sd.choice(sample_technologies) for i in range(self.sd.int(0, 5))],
                 needs=self.sd.paragraphs(2, 4),
                 logo=self.sd.choice(sample_logos),
                 piweek_id=1,

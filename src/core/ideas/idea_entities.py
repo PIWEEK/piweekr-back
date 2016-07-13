@@ -7,6 +7,8 @@ from skame.schemas import types as t, strings as s, numeric as n, base as b
 from skame.exceptions import SchemaError
 from tools import validator as v
 
+from core.users import user_entities
+
 
 class IdeaForCreate(ADTID):
     title = StrField()
@@ -40,9 +42,22 @@ class Idea(ADTID):
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
 
 
-from core.users import user_entities
-
 class IdeaHasOwner(Relationship1N):
     role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
     role_n = RoleMulti(role_class=Idea, role_name="ideas", role_fk="owner_id", required=True)
+
+
+class IdeaInvited(ADTID):
+    idea_id = IntField()
+    user_id = IntField()
+
+
+class IdeaInvitedHasIdea(Relationship1N):
+    role_1 = RoleSingle(role_class=Idea, role_name="idea")
+    role_n = RoleMulti(role_class=IdeaInvited, role_name="ideas_invited", role_fk="idea_id", required=True)
+
+
+class IdeaInvitedHasUser(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="user")
+    role_n = RoleMulti(role_class=IdeaInvited, role_name="ideas_invited", role_fk="user_id", required=True)
 

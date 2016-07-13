@@ -14,6 +14,8 @@ urls = [
     url(PREFIX + "/logout", user_handlers.Logout(), methods=["post"]),
     url(PREFIX + "/users", user_handlers.UsersList(), methods=["get"]),
     url(PREFIX + "/ideas", idea_handlers.IdeasList(), methods=["get", "post"]),
+    url(PREFIX + "/ideas/<string:idea_uuid>", idea_handlers.IdeaDetail(), methods=["get", "put", "delete"]),
+    url(PREFIX + "/ideas/<string:idea_uuid>/invited", idea_handlers.IdeaInvitedList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/projects", project_handlers.ProjectsList(), methods=["get"]),
 ]
 

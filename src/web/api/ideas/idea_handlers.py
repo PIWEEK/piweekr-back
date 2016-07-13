@@ -33,3 +33,41 @@ class IdeasList(Handler):
         else:
             return responses.BadRequest(validator.errors)
 
+
+class IdeaDetail(Handler):
+    def get(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        return responses.Ok(to_plain(idea, ignore_fields=["id"]))
+
+    def put(self, request):
+        raise NotImplementedError("TODO")
+
+    def delete(self, request):
+        raise NotImplementedError("TODO")
+
+
+class IdeaInvitedList(Handler):
+    def get(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        invited_list = idea_actions.list_invited(idea)
+        return responses.Ok([
+            to_plain(invited, ignore_fields=["id", "idea_id"],
+                relationships = {
+                    "user": {"ignore_fields": ["id", "password"]},
+                }
+            )
+            for invited in invited_list
+        ])
+
+    def post(self, request, idea_uuid):
+        raise NotImplementedError("TODO")
+
+    def delete(self, request, idea_uuid):
+        raise NotImplementedError("TODO")
+

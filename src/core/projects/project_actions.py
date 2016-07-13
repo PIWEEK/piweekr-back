@@ -17,7 +17,7 @@ def create_new_project(project_for_create):
         piweek_id = project_for_create.piweek_id,
         idea_from_id = project_for_create.idea_from_id,
         owner_id = project_for_create.owner_id,
-        created_at = arrow.utcnow()
+        created_at = arrow.utcnow(),
         comments_count=0,
         reactions_counts={},
     )

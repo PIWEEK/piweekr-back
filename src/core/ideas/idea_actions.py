@@ -23,6 +23,13 @@ def create_idea(owner, idea_for_create):
 
 
 def list_ideas():
-    ideas = idea_repository.list()
-    return ideas
+    return idea_repository.list()
+
+
+def get_idea(idea_uuid):
+    return idea_repository.retrieve_by_uuid(idea_uuid)
+
+
+def list_invited(idea):
+    return idea_repository.retrieve_invited_list(idea.id)
 

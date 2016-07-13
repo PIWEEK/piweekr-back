@@ -43,11 +43,11 @@ OBJETO: idea
     filter=all|owned (sólo las propias)|involved (propias+invitado+watching)
     order_by=title|date|popularity (suma de comments_count + reactions_count)
 
-  GET /api/v1/ideas/<uuid>
-    devuelve una idea
-
   POST /api/v1/ideas
     crea una idea nueva desde cero (campos title y description)
+
+  GET /api/v1/ideas/<uuid>
+    devuelve una idea
 
   PUT /api/v1/ideas/<uuid>
     modifica una idea (campos title y description)
