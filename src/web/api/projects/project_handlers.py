@@ -9,15 +9,17 @@ from web.handler import Handler
 
 class ProjectsList(Handler):
     def get(self, request):
-        #projects = project_actions.list_projects()
-        #return responses.Ok([
-        #    to_plain(project, ignore_fields=["id"],
-        #        relationships = {
-        #            "owner": {"ignore_fields": ["id", "password"]},
-        #        }
-        #    )
-        #    for project in projects
-        #])
+        projects = project_actions.list_projects()
+        return responses.Ok([
+            to_plain(project, ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                    "idea": {"ignore_fields": ["id", "owner_id", "forked_from", "comments_count",
+                                               "reactions_counts"]}
+                }
+            )
+            for project in projects
+        ])
 
         return responses.Ok([
             {

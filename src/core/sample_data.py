@@ -21,11 +21,11 @@ sample_colors = ["#FC8EAC", "#A5694F", "#002e33", "#67CF00", "#71A6D2", "#FFF8E7
 sample_technologies = ["python", "groovy", "c", "html", "css", "angualr", "cloujure", "cloujurescript", "IoT",
                        "music", "UX", "Design", "SASS", "CSS", "HTML", "PostCSS"]
 
-sample_logos = [
-   "http://createfunnylogo.com/blazed/MetanOR.jpg",
-   "http://createfunnylogo.com/logo/techcrunch/Virtual%20Gym.jpg",
-   "http://createfunnylogo.com/logo/flickr/PiWeekr.jpg",
-]
+sample_emojis = ["thumbsup", "dancer", "confused", "dancers", "baby", "smile"]
+
+sample_logos = ["http://createfunnylogo.com/blazed/MetanOR.jpg",
+                "http://createfunnylogo.com/logo/techcrunch/Virtual%20Gym.jpg",
+                "http://createfunnylogo.com/logo/flickr/PiWeekr.jpg"]
 
 class SampleData():
     sd = SampleData(seed=1234567890)
@@ -65,12 +65,6 @@ class SampleData():
 
     def make_ideas(self):
         for i in range(50):
-
-            emojis = ["thumbsup", "dancer", "confused"]
-            reactions_counts = {}
-            for j in range(self.sd.int(0, 3)):
-                reactions_counts[random.choice(emojis)] = self.sd.int(0, 10)
-
             idea = idea_entities.Idea(
                 uuid=uuid.uuid4().hex,
                 title=self.sd.words(5, 10).capitalize(),
@@ -80,7 +74,7 @@ class SampleData():
                 is_public=self.sd.boolean(),
                 forked_from=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
                 comments_count=self.sd.int(0, 20),
-                reactions_counts= reactions_counts,
+                reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 10) for j in range(self.sd.int(0, 3))},
             )
             idea = idea_repository.create(idea)
             self.idea_ids.append(idea.id)
@@ -98,6 +92,8 @@ class SampleData():
                 idea_from_id=random.choice(self.idea_ids),
                 owner_id=random.choice(self.user_ids),
                 created_at=arrow.get(self.sd.past_datetime()),
+                comments_count=self.sd.int(0, 20),
+                reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 10) for j in range(self.sd.int(0, 3))},
             )
             project = project_repository.create(project)
             self.project_ids.append(project.id)
