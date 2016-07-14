@@ -35,6 +35,10 @@ def list_projects():
     return projects
 
 
+def get_project(project_uuid):
+    return project_repository.retrieve_by_uuid(project_uuid)
+
+
 #######################################
 ## Comments
 #######################################
