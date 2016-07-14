@@ -20,7 +20,7 @@ class ProjectsList(Handler):
             to_plain(project, ignore_fields=["id"],
                 relationships = {
                     "owner": {"ignore_fields": ["id", "password"]},
-                    "idea_from": {"ignore_fields": ["id", "is_active", "owner_id", "forked_from",
+                    "idea_from": {"ignore_fields": ["id", "is_active", "owner_id", "forked_from_id",
                                                     "comments_count", "reactions_counts"]},
                     "users_interested": {
                         "ignore_fields": ["id"],

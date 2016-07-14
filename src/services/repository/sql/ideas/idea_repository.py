@@ -44,8 +44,7 @@ def list():
             select(
                 [repo.ideas, repo.users],
                 use_labels=True
-            )
-            .select_from(
+            ).select_from(
                 repo.ideas.join(
                     repo.users,
                     repo.ideas.c.owner_id == repo.users.c.id
@@ -54,6 +53,25 @@ def list():
                 repo.ideas.c.is_active == True
             ).order_by(repo.ideas.c.title)
         )
+        for idea in ideas:
+            if idea.forked_from_id:
+                original_idea = repo.retrieve_joined_adt(
+                    context,
+                    idea_entities.Idea,
+                    {"ideas": idea_entities.Idea, "users": user_entities.User},
+                    select(
+                        [repo.ideas, repo.users],
+                        use_labels=True
+                    ).select_from(
+                        repo.ideas.join(
+                            repo.users,
+                            repo.ideas.c.owner_id == repo.users.c.id
+                        )
+                    ).where(
+                        repo.ideas.c.id == idea.forked_from_id
+                    )
+                )
+
     return ideas
 
 
@@ -122,6 +140,23 @@ def retrieve_by_uuid(idea_uuid):
                 (repo.ideas.c.is_active == True)
             )
         )
+        if idea and idea.forked_from_id:
+            original_idea = repo.retrieve_joined_adt(
+                context,
+                idea_entities.Idea,
+                {"ideas": idea_entities.Idea, "users": user_entities.User},
+                select(
+                    [repo.ideas, repo.users],
+                    use_labels=True
+                ).select_from(
+                    repo.ideas.join(
+                        repo.users,
+                        repo.ideas.c.owner_id == repo.users.c.id
+                    )
+                ).where(
+                    repo.ideas.c.id == idea.forked_from_id
+                )
+            )
     return idea
 
 

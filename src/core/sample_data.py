@@ -75,7 +75,7 @@ class SampleData():
                 owner_id=random.choice(self.user_ids),
                 created_at=arrow.get(self.sd.past_datetime()),
                 is_public=self.sd.boolean(),
-                forked_from=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
+                forked_from_id=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
                 comments_count=self.sd.int(0, 10),
                 reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 5) for j in range(self.sd.int(0, 3))},
             )

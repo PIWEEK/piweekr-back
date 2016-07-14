@@ -19,6 +19,12 @@ class IdeasList(Handler):
             to_plain(idea, ignore_fields=["id", "is_active"],
                 relationships = {
                     "owner": {"ignore_fields": ["id", "password"]},
+                    "forked_from": {
+                        "only_fields": ["title"],
+                        "relationships": {
+                            "owner": {"ignore_fields": ["id", "password"]},
+                        }
+                    }
                 }
             )
             for idea in ideas
@@ -54,6 +60,12 @@ class IdeaDetail(Handler):
             ignore_fields=["id", "is_active"],
             relationships = {
                 "owner": {"ignore_fields": ["id", "password"]},
+                "forked_from": {
+                    "only_fields": ["title"],
+                    "relationships": {
+                        "owner": {"ignore_fields": ["id", "password"]},
+                    }
+                }
             }
         ))
 

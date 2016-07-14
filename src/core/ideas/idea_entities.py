@@ -44,7 +44,7 @@ class Idea(ADTID):
     owner_id = IntField()
     created_at = ArrowDateTimeField()
     is_public = BoolField()
-    forked_from = IntField(null=True)
+    forked_from_id = IntField(null=True)
     comments_count = IntField()
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
 
@@ -76,6 +76,11 @@ class Idea(ADTID):
 class IdeaHasOwner(Relationship1N):
     role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
     role_n = RoleMulti(role_class=Idea, role_name="ideas", role_fk="owner_id", required=True)
+
+
+class IdeaHasForks(Relationship1N):
+    role_1 = RoleSingle(role_class=Idea, role_name="forked_from")
+    role_n = RoleMulti(role_class=Idea, role_name="forks", role_fk="forked_from_id", required=False)
 
 
 #######################################

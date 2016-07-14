@@ -23,7 +23,7 @@ def create_idea(owner, idea_for_create):
         owner_id = owner.id,
         created_at = arrow.now(),
         is_public = idea_for_create.is_public,
-        forked_from = None,
+        forked_from_id = None,
         comments_count = 0,
         reactions_counts = {},
     )
@@ -72,7 +72,7 @@ def fork_idea(user, idea):
         owner_id = user.id,
         created_at = arrow.now(),
         is_public = idea.is_public,
-        forked_from = idea.id,
+        forked_from_id = idea.id,
         comments_count = 0,
         reactions_counts = {},
     )
