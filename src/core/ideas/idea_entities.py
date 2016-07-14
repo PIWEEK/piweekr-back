@@ -78,7 +78,7 @@ class IdeaInvited(ADTID):
 
 class IdeaInvitedHasIdea(Relationship1N):
     role_1 = RoleSingle(role_class=Idea, role_name="idea")
-    role_n = RoleMulti(role_class=IdeaInvited, role_name="ideas_invited", role_fk="idea_id", required=True)
+    role_n = RoleMulti(role_class=IdeaInvited, role_name="users_invited", role_fk="idea_id", required=True)
 
 
 class IdeaInvitedHasUser(Relationship1N):
