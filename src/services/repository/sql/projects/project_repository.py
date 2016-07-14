@@ -56,6 +56,23 @@ def list():
                 )
             ).order_by(repo.projects.c.title)
         )
+        for project in projects:
+            interested = repo.retrieve_joined_adts(
+                context,
+                project_entities.ProjectInterested,
+                {"projects_interested": project_entities.ProjectInterested, "users": user_entities.User},
+                select(
+                    [repo.projects_interested, repo.users],
+                    use_labels=True
+                ).select_from(
+                    repo.projects_interested.join(
+                        repo.users,
+                        repo.projects_interested.c.user_id == repo.users.c.id
+                    )
+                ).where(
+                    repo.projects_interested.c.project_id == project.id
+                ).order_by(repo.users.c.full_name)
+            )
     return projects
 
 

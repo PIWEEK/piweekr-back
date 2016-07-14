@@ -84,7 +84,13 @@ class ADTConverter(ObjectConverter):
 
         for role_name, options in relationships.items():
             foreign_object = getattr(the_object, role_name)
-            d[role_name] = to_plain(foreign_object, **options) if foreign_object else None
+            if type(foreign_object) == list:
+                d[role_name] = [
+                    to_plain(foreign_item, **options) if foreign_item else None
+                    for foreign_item in foreign_object
+                ]
+            else:
+                d[role_name] = to_plain(foreign_object, **options) if foreign_object else None
 
         return d
 

@@ -21,7 +21,13 @@ class ProjectsList(Handler):
                 relationships = {
                     "owner": {"ignore_fields": ["id", "password"]},
                     "idea_from": {"ignore_fields": ["id", "is_active", "owner_id", "forked_from", "comments_count",
-                                               "reactions_counts"]}
+                                               "reactions_counts"]},
+                    "users_interested": {
+                        "ignore_fields": ["id"],
+                        "relationships": {
+                            "user": {"ignore_fields": ["id", "password"]},
+                        }
+                    },
                 }
             )
             for project in projects

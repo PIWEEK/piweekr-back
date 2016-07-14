@@ -59,7 +59,7 @@ class ProjectInterested(ADTID):
 
 class ProjectInterestedHasProject(Relationship1N):
     role_1 = RoleSingle(role_class=Project, role_name="project")
-    role_n = RoleMulti(role_class=ProjectInterested, role_name="projects_interested", role_fk="project_id", required=True)
+    role_n = RoleMulti(role_class=ProjectInterested, role_name="users_interested", role_fk="project_id", required=True)
 
 
 class ProjectInterestedHasUser(Relationship1N):
