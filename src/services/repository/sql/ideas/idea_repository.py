@@ -142,7 +142,7 @@ def delete_invited(invited):
 
 
 #######################################
-## Coment
+## Comment
 #######################################
 
 repo.add_adt_table(

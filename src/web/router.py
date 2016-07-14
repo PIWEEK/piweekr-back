@@ -24,13 +24,13 @@ urls = [
     url(PREFIX + "/ideas/<string:idea_uuid>/invited",
         idea_handlers.IdeaInvitedList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/ideas/<string:idea_uuid>/comments",
-        idea_handlers.IdeaComentsList(), methods=["get", "post", "delete"]),
+        idea_handlers.IdeaCommentsList(), methods=["get", "post", "delete"]),
 
     # Projects
     url(PREFIX + "/projects",
         project_handlers.ProjectsList(), methods=["get"]),
     url(PREFIX + "/projects/<string:project_uuid>/comments",
-        project_handlers.ProjectComentsList(), methods=["get", "post", "delete"]),
+        project_handlers.ProjectCommentsList(), methods=["get", "post", "delete"]),
 ]
 
 router = anillo_router(urls)

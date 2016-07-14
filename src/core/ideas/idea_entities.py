@@ -95,7 +95,7 @@ class IdeaRemoveInvitedValidator(v.Validator):
 
 
 #######################################
-## Coment
+## Comment
 #######################################
 
 class IdeaCommentForCreate(ADTID):
@@ -119,12 +119,12 @@ class IdeaComment(ADTID):
     created_at = ArrowDateTimeField()
 
 
-class IdeaComentHasOwner(Relationship1N):
+class IdeaCommentHasOwner(Relationship1N):
     role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
     role_n = RoleMulti(role_class=IdeaComment, role_name="idea_comments", role_fk="owner_id", required=True)
 
 
-class IdeaComentFromIdea(Relationship1N):
+class IdeaCommentFromIdea(Relationship1N):
     role_1 = RoleSingle(role_class=Idea, role_name="idea")
     role_n = RoleMulti(role_class=IdeaComment, role_name="comments", role_fk="idea_id", required=True)
 

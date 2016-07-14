@@ -74,7 +74,7 @@ def retrieve_by_title(title):
 
 
 #######################################
-## Coment
+## Comment
 #######################################
 
 repo.add_adt_table(

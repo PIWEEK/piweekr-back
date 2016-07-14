@@ -28,10 +28,10 @@ class ProjectsList(Handler):
 
 
 #######################################
-## Coment
+## Comment
 #######################################
 
-class ProjectComentsList(Handler):
+class ProjectCommentsList(Handler):
     def get(self, request, project_uuid):
         project = project_actions.get_project(project_uuid)
         if not project:

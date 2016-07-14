@@ -50,7 +50,7 @@ class ProjectIsFromIdea(Relationship1N):
 
 
 #######################################
-## Coment
+## Comment
 #######################################
 
 class ProjectCommentForCreate(ADTID):
@@ -74,12 +74,12 @@ class ProjectComment(ADTID):
     created_at = ArrowDateTimeField()
 
 
-class ProjectComentHasOwner(Relationship1N):
+class ProjectCommentHasOwner(Relationship1N):
     role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
     role_n = RoleMulti(role_class=ProjectComment, role_name="project_comments", role_fk="owner_id", required=True)
 
 
-class ProjectComentFromProject(Relationship1N):
+class ProjectCommentFromProject(Relationship1N):
     role_1 = RoleSingle(role_class=Project, role_name="project")
     role_n = RoleMulti(role_class=ProjectComment, role_name="comments", role_fk="project_id", required=True)
 

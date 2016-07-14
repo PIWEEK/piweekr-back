@@ -100,10 +100,10 @@ class IdeaInvitedList(Handler):
 
 
 #######################################
-## Coment
+## Comment
 #######################################
 
-class IdeaComentsList(Handler):
+class IdeaCommentsList(Handler):
     def get(self, request, idea_uuid):
         idea = idea_actions.get_idea(idea_uuid)
         if not idea:
