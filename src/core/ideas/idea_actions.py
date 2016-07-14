@@ -141,7 +141,7 @@ def remove_invited_user(user, idea, invited_username):
 
 def create_comment(owner, idea,  comment_for_create):
     if not idea.is_public or idea.owner_id != owner.id:
-        invited = idea_repository.retrieve_invited_by_user_id(owner.id)
+        invited = idea_repository.retrieve_invited(idea.id, owner.id)
         if not invited:
             raise exceptions.Forbidden("Only invited users can comment")
 

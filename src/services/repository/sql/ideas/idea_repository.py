@@ -124,20 +124,6 @@ def retrieve_invited(idea_id, user_id):
     return invited
 
 
-def retrieve_invited_by_user_id(user_id):
-    with repo.context() as context:
-        idea = repo.retrieve_single_adt(
-            context,
-            idea_entities.Idea,
-            select(
-                [repo.ideas]
-            ).where(
-                repo.ideas.c.user_id == user_id
-            )
-        )
-    return idea
-
-
 def delete_invited(invited):
     with repo.context() as context:
         row_count = repo.delete_adt(context, repo.ideas_invited, invited)
