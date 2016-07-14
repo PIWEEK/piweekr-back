@@ -52,8 +52,8 @@ def update_idea(owner, idea):
     return idea_repository.update(idea)
 
 
-def list_ideas():
-    return idea_repository.list()
+def list_ideas(user):
+    return idea_repository.list_for_user(user)
 
 
 def get_idea(idea_uuid):

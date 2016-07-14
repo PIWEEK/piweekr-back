@@ -14,7 +14,7 @@ from web.decorators import login_required
 
 class IdeasList(Handler):
     def get(self, request):
-        ideas = idea_actions.list_ideas()
+        ideas = idea_actions.list_ideas(request.user)
         return responses.Ok([
             to_plain(idea, ignore_fields=["id", "is_active"],
                 relationships = {

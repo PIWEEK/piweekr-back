@@ -57,6 +57,51 @@ def list():
     return ideas
 
 
+def list_for_user(user):
+    with repo.context() as context:
+        if user:
+            stmt = select(
+                [repo.ideas, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.ideas.join(
+                    repo.users,
+                    repo.ideas.c.owner_id == repo.users.c.id
+                ).outerjoin(
+                    repo.ideas_invited,
+                    repo.ideas_invited.c.idea_id == repo.ideas.c.id
+                )
+            ).where(
+                (repo.ideas.c.is_active == True) &
+                (
+                    (repo.ideas.c.is_public == True) |
+                    (repo.ideas.c.owner_id == user.id) |
+                    (repo.ideas_invited.c.user_id == user.id)
+                )
+            ).order_by(repo.ideas.c.title)
+        else:
+            stmt = select(
+                [repo.ideas, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.ideas.join(
+                    repo.users,
+                    repo.ideas.c.owner_id == repo.users.c.id
+                )
+            ).where(
+                (repo.ideas.c.is_active == True) &
+                (repo.ideas.c.is_public == True)
+            ).order_by(repo.ideas.c.title)
+
+        ideas = repo.retrieve_joined_adts(
+            context,
+            idea_entities.Idea,
+            {"ideas": idea_entities.Idea, "users": user_entities.User},
+            stmt
+        )
+    return ideas
+
+
 def retrieve_by_uuid(idea_uuid):
     with repo.context() as context:
         idea = repo.retrieve_single_adt(
