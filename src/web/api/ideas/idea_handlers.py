@@ -69,6 +69,7 @@ class IdeaDetail(Handler):
             }
         ))
 
+    @login_required
     def patch(self, request, idea_uuid):
         idea = idea_actions.get_idea(idea_uuid)
         if not idea:

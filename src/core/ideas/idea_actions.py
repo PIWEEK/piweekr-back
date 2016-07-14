@@ -1,6 +1,7 @@
 from copy import deepcopy
 from tools.password import generate_hash, verify_hash
 from services.repository.sql.ideas import idea_repository
+from services.repository.sql.projects import project_repository
 from services.repository.sql.users import user_repository
 
 from core import exceptions
@@ -118,6 +119,7 @@ def promote_idea(user, idea):
                 user_id = invited.user_id,
             )
         )
+    return project_repository.retrieve_by_uuid(project.uuid)
 
 
 #######################################
