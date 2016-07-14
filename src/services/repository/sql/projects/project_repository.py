@@ -114,3 +114,30 @@ def retrieve_comment_list(project):
             ).order_by(repo.project_comments.c.created_at)
         )
     return comments
+
+
+def retrieve_comment(comment_id):
+    with repo.context() as context:
+        comment = repo.retrieve_joined_adt(
+            context,
+            project_entities.IdeaComment,
+            {"project_comments": project_entities.IdeaComment,
+             "projects": project_entities.Idea,
+             "users": user_entities.User},
+            select(
+                [repo.project_comments, repo.projects, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.project_comments.join(
+                    repo.projects,
+                    repo.project_comments.c.project_id == repo.projects.c.id
+                )
+                .join(
+                    repo.users,
+                    repo.project_comments.c.owner_id == repo.users.c.id
+                )
+            ).where(
+                repo.project_comments.c.id == comment_id
+            )
+        )
+    return comment

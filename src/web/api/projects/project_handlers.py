@@ -60,7 +60,13 @@ class ProjectCommentsList(Handler):
                 project,
                 project_entities.ProjectCommentForCreate(**validator.cleaned_data)
             )
-            return responses.Ok(to_plain(comment, ignore_fields=["id"]))
+            return responses.Ok(to_plain(
+                comment,
+                ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            ))
         else:
             return responses.BadRequest(validator.errors)
 

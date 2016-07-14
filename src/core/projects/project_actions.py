@@ -51,7 +51,8 @@ def create_comment(owner, project,  comment_for_create):
     project.increase_comment_count()
     project_repository.update(project)
 
-    return project_repository.create_comment(comment)
+    comment = project_repository.create_comment(comment)
+    return project_repository.retrieve_comment(comment.id)
 
 
 def list_comments(project):
