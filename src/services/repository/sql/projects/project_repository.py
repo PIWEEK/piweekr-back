@@ -31,6 +31,12 @@ def create(project):
     return project
 
 
+def update(project):
+    with repo.context() as context:
+        project = repo.update_adt(context, repo.projects, project)
+    return project
+
+
 def list():
     with repo.context() as context:
         projects = repo.retrieve_joined_adts(
@@ -178,9 +184,9 @@ def retrieve_comment(comment_id):
     with repo.context() as context:
         comment = repo.retrieve_joined_adt(
             context,
-            project_entities.IdeaComment,
-            {"project_comments": project_entities.IdeaComment,
-             "projects": project_entities.Idea,
+            project_entities.ProjectComment,
+            {"project_comments": project_entities.ProjectComment,
+             "projects": project_entities.Project,
              "users": user_entities.User},
             select(
                 [repo.project_comments, repo.projects, repo.users],

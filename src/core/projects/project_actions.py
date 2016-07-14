@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import arrow
+import uuid
 
 from services.repository.sql.projects import project_repository
 from services.repository.sql.users import user_repository

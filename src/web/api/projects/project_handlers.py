@@ -1,6 +1,7 @@
 from anillo.http import responses
 
 from core.projects import project_actions
+from core.projects import project_entities
 
 from tools.adt.converter import to_plain, from_plain
 
