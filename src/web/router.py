@@ -27,6 +27,8 @@ urls = [
         idea_handlers.IdeaCommentsList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/ideas/<string:idea_uuid>/reactions",
         idea_handlers.IdeaReactionsList(), methods=["get", "post", "delete"]),
+    url(PREFIX + "/ideas/<string:idea_uuid>/fork",
+        idea_handlers.IdeaFork(), methods=["post"]),
     url(PREFIX + "/ideas/<string:idea_uuid>/promote",
         idea_handlers.IdeaPromote(), methods=["post"]),
 

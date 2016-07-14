@@ -64,6 +64,17 @@ class IdeaDetail(Handler):
         raise NotImplementedError("TODO")
 
 
+class IdeaFork(Handler):
+    def post(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        forked_idea = idea_actions.fork_idea(request.user, idea)
+
+        return responses.Ok(to_plain(forked_idea, ignore_fields=["id", "is_active"]))
+
+
 class IdeaPromote(Handler):
     def post(self, request, idea_uuid):
         idea = idea_actions.get_idea(idea_uuid)

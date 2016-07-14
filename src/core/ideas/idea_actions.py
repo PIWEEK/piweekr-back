@@ -60,6 +60,27 @@ def get_idea(idea_uuid):
     return idea_repository.retrieve_by_uuid(idea_uuid)
 
 
+def fork_idea(user, idea):
+    if idea.owner_id == user.id:
+        raise exceptions.Forbidden("You cannot fork your own idea")
+
+    forked_idea = idea_entities.Idea(
+        uuid = uuid.uuid4().hex,
+        is_active = True,
+        title = idea.title,
+        description = idea.description,
+        owner_id = user.id,
+        created_at = arrow.now(),
+        is_public = idea.is_public,
+        forked_from = idea.id,
+        comments_count = 0,
+        reactions_counts = {},
+    )
+    forked_idea = idea_repository.create(forked_idea)
+
+    return idea_repository.retrieve_by_uuid(forked_idea.uuid)
+
+
 def promote_idea(user, idea):
     if idea.owner_id != user.id:
         raise exceptions.Forbidden("Only owner can promote an idea")
