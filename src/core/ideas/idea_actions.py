@@ -156,7 +156,8 @@ def create_comment(owner, idea,  comment_for_create):
     idea.increase_comment_count()
     idea_repository.update(idea)
 
-    return idea_repository.create_comment(comment)
+    comment = idea_repository.create_comment(comment)
+    return idea_repository.retrieve_comment(comment.id)
 
 
 def list_comments(idea):

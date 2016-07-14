@@ -130,3 +130,8 @@ class SQLADTRepository:
 
         return adts
 
+    def retrieve_joined_adt(self, context, main_class, classes, select):
+        results = self.retrieve_joined_adts(context, main_class, classes, select)
+
+        # TODO:  raise errors if len(results) > 1
+        return results[0] if len(results) > 0 else None

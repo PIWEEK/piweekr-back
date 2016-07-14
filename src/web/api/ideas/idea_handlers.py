@@ -143,7 +143,13 @@ class IdeaCommentsList(Handler):
                 idea,
                 idea_entities.IdeaCommentForCreate(**validator.cleaned_data)
             )
-            return responses.Ok(to_plain(comment, ignore_fields=["id"]))
+            return responses.Ok(to_plain(
+                comment,
+                ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            ))
         else:
             return responses.BadRequest(validator.errors)
 
