@@ -94,3 +94,29 @@ def create_comment(owner, project,  comment_for_create):
 def list_comments(project):
     comments = project_repository.retrieve_comment_list(project)
     return comments
+
+
+#######################################
+## Reaction
+#######################################
+
+def create_reaction(owner, project, reaction_for_create):
+    reaction = project_entities.ProjectReaction(
+        uuid = uuid.uuid4().hex,
+        code = reaction_for_create.code,
+        owner_id = owner.id,
+        project_id = project.id,
+        created_at = arrow.now(),
+    )
+
+    project.increase_reaction_count(reaction.code)
+    project_repository.update(project)
+
+    reaction = project_repository.create_reaction(reaction)
+    return project_repository.retrieve_reaction(reaction.id)
+
+
+def list_reactions(project):
+    reactions = project_repository.retrieve_reaction_list(project)
+    return reactions
+

@@ -134,3 +134,51 @@ class ProjectCommentsList(Handler):
     @login_required
     def delete(self, request, project_uuid):
         raise NotImplementedError("TODO")
+
+
+#######################################
+## Reaction
+#######################################
+
+class ProjectReactionsList(Handler):
+    def get(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        reactions = project_actions.list_reactions(project)
+        return responses.Ok([
+            to_plain(reaction, ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            )
+            for reaction in reactions
+        ])
+
+    @login_required
+    def post(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        validator = project_entities.ProjectReactionForCreateValidator(request.body)
+        if validator.is_valid():
+            reaction = project_actions.create_reaction(
+                request.user,
+                project,
+                project_entities.ProjectReactionForCreate(**validator.cleaned_data)
+            )
+            return responses.Ok(to_plain(
+                reaction,
+                ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            ))
+        else:
+            return responses.BadRequest(validator.errors)
+
+    @login_required
+    def delete(self, request, project_uuid):
+        raise NotImplementedError("TODO")

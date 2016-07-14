@@ -41,6 +41,8 @@ urls = [
         project_handlers.ProjectInterestedList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/projects/<string:project_uuid>/comments",
         project_handlers.ProjectCommentsList(), methods=["get", "post", "delete"]),
+    url(PREFIX + "/projects/<string:project_uuid>/reactions",
+        project_handlers.ProjectReactionsList(), methods=["get", "post", "delete"]),
 ]
 
 router = anillo_router(urls)

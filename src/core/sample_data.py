@@ -150,7 +150,7 @@ class SampleData():
                 owner_id=random.choice(self.user_ids),
                 created_at=arrow.get(self.sd.past_datetime()),
                 comments_count=self.sd.int(0, 10),
-                reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 10) for j in range(self.sd.int(0, 3))},
+                reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 5) for j in range(self.sd.int(0, 3))},
             )
             project = project_repository.create(project)
             self.project_ids.append(project.id)
@@ -179,3 +179,22 @@ class SampleData():
                 )
                 project_repository.create_comment(comment)
                 print("Comment '{}' created.".format(comment.uuid))
+
+            excluded_ids = []
+            for code, count in project.reactions_counts.items():
+                for j in range(count):
+                    while True:
+                        user_id = random.choice(self.user_ids)
+                        if not user_id in excluded_ids:
+                            excluded_ids.append(user_id)
+                            break
+                    reaction = project_entities.ProjectReaction(
+                        uuid=uuid.uuid4().hex,
+                        code=code,
+                        owner_id=user_id,
+                        project_id=project.id,
+                        created_at=arrow.get(self.sd.past_datetime()),
+                    )
+                    project_repository.create_reaction(reaction)
+                    print("Reaction '{}' created.".format(reaction.uuid))
+

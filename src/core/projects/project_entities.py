@@ -33,6 +33,17 @@ class Project(ADTID):
         if self.comments_count > 0:
             self.comments_count -= 1
 
+    def increase_reaction_count(self, code):
+        if not code in self.reactions_counts:
+            self.reactions_counts[code] = 0
+        self.reactions_counts[code] += 1
+
+    def decrease_reaction_count(self, code):
+        if code in self.reactions_counts:
+            self.reactions_counts[code] -= 1
+            if self.reactions_counts[code] <= 0:
+                del self.reactions_counts[code]
+
 
 from core.users import user_entities
 
@@ -113,4 +124,39 @@ class ProjectCommentHasOwner(Relationship1N):
 class ProjectCommentFromProject(Relationship1N):
     role_1 = RoleSingle(role_class=Project, role_name="project")
     role_n = RoleMulti(role_class=ProjectComment, role_name="comments", role_fk="project_id", required=True)
+
+
+#######################################
+## Reaction
+#######################################
+
+class ProjectReactionForCreate(ADTID):
+    code = StrField()
+
+
+class ProjectReactionForCreateValidator(v.Validator):
+    schema = b.schema({
+        "code": b.And(
+            t.String(),
+            s.NotEmpty(),
+        )
+    })
+
+
+class ProjectReaction(ADTID):
+    uuid = StrField()
+    code = StrField()
+    owner_id = IntField()
+    project_id = IntField()
+    created_at = ArrowDateTimeField()
+
+
+class ProjectReactionHasOwner(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
+    role_n = RoleMulti(role_class=ProjectReaction, role_name="project_reactions", role_fk="owner_id", required=True)
+
+
+class ProjectReactionFromProject(Relationship1N):
+    role_1 = RoleSingle(role_class=Project, role_name="project")
+    role_n = RoleMulti(role_class=ProjectReaction, role_name="reactions", role_fk="project_id", required=True)
 
