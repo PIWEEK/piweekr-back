@@ -20,7 +20,7 @@ urls = [
     url(PREFIX + "/ideas",
         idea_handlers.IdeasList(), methods=["get", "post"]),
     url(PREFIX + "/ideas/<string:idea_uuid>",
-        idea_handlers.IdeaDetail(), methods=["get", "put", "delete"]),
+        idea_handlers.IdeaDetail(), methods=["get", "patch", "delete"]),
     url(PREFIX + "/ideas/<string:idea_uuid>/invited",
         idea_handlers.IdeaInvitedList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/ideas/<string:idea_uuid>/comments",

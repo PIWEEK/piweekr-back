@@ -1,3 +1,4 @@
+from copy import deepcopy
 from tools.password import generate_hash, verify_hash
 from services.repository.sql.ideas import idea_repository
 from services.repository.sql.users import user_repository
@@ -48,8 +49,11 @@ def create_idea(owner, idea_for_create):
     return idea_repository.retrieve_by_uuid(idea.uuid)
 
 
-def update_idea(owner, idea):
-    return idea_repository.update(idea)
+def update_idea(idea, updates):
+    data = deepcopy(updates.to_dict())
+    idea.edit(data)
+    idea_repository.update(idea)
+    return idea_repository.retrieve_by_uuid(idea.uuid)
 
 
 def list_ideas(user):

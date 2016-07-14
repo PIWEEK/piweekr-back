@@ -39,7 +39,8 @@ class UserForUpdate(ADTID):
     clear_password = StrField(null=True)
     full_name = StrField(null=True)
     email = StrField(null=True)
-    avatar = Field(type=dict, null=True) # Format: {<section>: <icon>} where section = "head"|"body"|"legs"|"background" and value is [1-10], background must be a valid html color
+    avatar = Field(type=dict, null=True) # Format: {<section>: <icon>} where section = "head"|"body"|"legs"|
+                                         # "background" and value is [1-10], background must be a valid html                                             # color.
 
 
 class UserForUpdateValidator(v.Validator):
@@ -54,12 +55,14 @@ class UserForUpdateValidator(v.Validator):
         b.Optional("avatar"): t.Dict() #TODO: Improve this validation
     })
 
+
 class User(ADTID):
     username = StrField()
     password = StrField()
     full_name = StrField()
     email = StrField()
-    avatar = Field(type=dict) # Format: {<section>: <icon>} where section = "head"|"body"|"legs"|"background" and value is [1-10], background must be a valid html color
+    avatar = Field(type=dict) # Format: {<section>: <icon>} where section = "head"|"body"|"legs"|"background"
+                              # and value is [1-10], background must be a valid html color
 
     def edit(self, data):
         if data.get("username", None):

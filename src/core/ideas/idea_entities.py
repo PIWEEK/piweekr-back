@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tools.adt.types import ADTID, Field, StrField, IntField, BoolField, ArrowDateTimeField
+from tools.adt.types import ADT, ADTID, Field, StrField, IntField, BoolField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
 from skame.schemas import types as t, strings as s, numeric as n, base as b
@@ -14,7 +14,7 @@ from core.users import user_entities
 ## Idea
 #######################################
 
-class IdeaForCreate(ADTID):
+class IdeaForCreate(ADT):
     title = StrField()
     description = StrField()
     is_public = BoolField()
@@ -36,6 +36,26 @@ class IdeaForCreateValidator(v.Validator):
     })
 
 
+class IdeaForUpdate(ADT):
+    title = StrField(null=True)
+    description = StrField(null=True)
+    is_public = BoolField(null=True)
+
+
+class IdeaForUpdateValidator(v.Validator):
+    schema = b.schema({
+        b.Optional("title"): b.And(
+            t.String(),
+            s.NotEmpty(),
+        ),
+        b.Optional("description"): b.And(
+            t.String(),
+            s.NotEmpty(),
+        ),
+        b.Optional("is_public"): t.Bool(),
+    })
+
+
 class Idea(ADTID):
     uuid = StrField()
     is_active = BoolField()
@@ -47,6 +67,15 @@ class Idea(ADTID):
     forked_from_id = IntField(null=True)
     comments_count = IntField()
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
+
+
+    def edit(self, data):
+        if data.get("title", None):
+            self.title = data["title"]
+        if data.get("description", None):
+            self.description = data["description"]
+        if data.get("is_public", None) != None:
+            self.is_public = data["is_public"]
 
     def deactivate(self):
         self.is_active = False

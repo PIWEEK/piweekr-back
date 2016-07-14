@@ -69,8 +69,34 @@ class IdeaDetail(Handler):
             }
         ))
 
-    def put(self, request):
-        raise NotImplementedError("TODO")
+    def patch(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        if request.user.id != idea.owner_id:
+            return responses.Forbidden({"error": "You can only update your ideas"})
+
+        validator = idea_entities.IdeaForUpdateValidator(request.body)
+        if validator.is_valid():
+            idea = idea_actions.update_idea(
+                idea,
+                idea_entities.IdeaForUpdate(**validator.cleaned_data)
+            )
+            return responses.Ok(to_plain(
+                idea,
+                ignore_fields=["id", "is_active"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                    "forked_from": {
+                        "only_fields": ["title"],
+                        "relationships": {
+                            "owner": {"ignore_fields": ["id", "password"]},
+                        }
+                    }
+                }
+            ))
+        return responses.BadRequest(validator.errors)
 
     def delete(self, request):
         raise NotImplementedError("TODO")
