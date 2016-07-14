@@ -36,9 +36,8 @@ def setup_application():
 
     return application(handler)
 
-
 def runserver():
     app = setup_application()
     from anillo import serving
-    serving.run_simple(app, port=5000, host='0.0.0.0')
+    serving.run_simple(app, port=5000, host='0.0.0.0', threaded=True)
 
