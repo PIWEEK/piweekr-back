@@ -61,17 +61,14 @@ class User(ADTID):
     email = StrField()
     avatar = Field(type=dict) # Format: {<section>: <icon>} where section = "head"|"body"|"legs"|"background" and value is [1-10], background must be a valid html color
 
-    def update_username(self, new_username):
-        self.username = new_username
-
-    def update_password(self, new_password):
-        self.password = password
-
-    def update_full_name(self, new_full_name):
-        self.full_name = new_full_name
-
-    def update_email(self, new_email):
-        self.email = new_email
-
-    def update_avatar(self, new_avatar):
-        self.avatar = new_avatar
+    def edit(self, data):
+        if data.get("username", None):
+            self.username = data["username"]
+        if data.get("password", None):
+            self.password = data["password"]
+        if data.get("full_name", None):
+            self.full_name = data["full_name"]
+        if data.get("email", None):
+            self.email = data["new_email"]
+        if data.get("avatar", None):
+            self.avatar = data["avatar"]

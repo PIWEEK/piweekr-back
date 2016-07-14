@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from copy import deepcopy
+
 from tools.password import generate_hash, verify_hash
 from services.repository.sql.users import user_repository
 
@@ -44,15 +46,10 @@ def list_users():
 
 
 def update_user(user, updates):
-    if updates.username:
-        user.update_username(updates.username)
-    if updates.clear_password:
-        user.update_password(generate_hash(updates.clear_password))
-    if updates.full_name:
-        user.update_full_name(updates.full_name)
-    if updates.email:
-        user.update_email(updates.email)
-    if updates.avatar:
-        user.update_avatar(updates.avatar)
+    data = deepcopy(updates.to_dict())
+    if data.get("clear_password", None):
+        data["password"] = generate_hash(data["clear_password"])
+        del data["clear_password"]
+    user.edit(data)
 
     return user_repository.update(user)

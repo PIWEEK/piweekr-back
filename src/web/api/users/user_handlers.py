@@ -58,8 +58,6 @@ class UserDetail(Handler):
         if not user:
             return responses.NotFound()
 
-        if request.user.id == user.id:
-            return responses.Ok(to_plain(user, ignore_fields=["id"]))
         return responses.Ok(to_plain(user, ignore_fields=["id", "password"]))
 
     @login_required
