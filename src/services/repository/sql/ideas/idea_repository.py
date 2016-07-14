@@ -104,11 +104,19 @@ def list_for_user(user):
 
 def retrieve_by_uuid(idea_uuid):
     with repo.context() as context:
-        idea = repo.retrieve_single_adt(
+        idea = repo.retrieve_joined_adt(
             context,
             idea_entities.Idea,
+            {"ideas": idea_entities.Idea, "users": user_entities.User},
             select(
-                [repo.ideas]
+                [repo.ideas, repo.users],
+                use_labels=True
+            )
+            .select_from(
+                repo.ideas.join(
+                    repo.users,
+                    repo.ideas.c.owner_id == repo.users.c.id
+                )
             ).where(
                 (repo.ideas.c.uuid == idea_uuid) &
                 (repo.ideas.c.is_active == True)

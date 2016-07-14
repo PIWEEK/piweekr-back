@@ -32,7 +32,13 @@ class IdeasList(Handler):
                 request.user,
                 idea_entities.IdeaForCreate(**validator.cleaned_data)
             )
-            return responses.Ok(to_plain(idea, ignore_fields=["id", "is_active"]))
+            return responses.Ok(to_plain(
+                idea,
+                ignore_fields=["id", "is_active"],
+                relationships={
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            ))
         else:
             return responses.BadRequest(validator.errors)
 
@@ -43,7 +49,13 @@ class IdeaDetail(Handler):
         if not idea:
             return responses.NotFound()
 
-        return responses.Ok(to_plain(idea, ignore_fields=["id", "is_active"]))
+        return responses.Ok(to_plain(
+            idea,
+            ignore_fields=["id", "is_active"],
+            relationships = {
+                "owner": {"ignore_fields": ["id", "password"]},
+            }
+        ))
 
     def put(self, request):
         raise NotImplementedError("TODO")

@@ -45,7 +45,7 @@ def create_idea(owner, idea_for_create):
                 )
             )
 
-    return idea
+    return idea_repository.retrieve_by_uuid(idea.uuid)
 
 
 def update_idea(owner, idea):
