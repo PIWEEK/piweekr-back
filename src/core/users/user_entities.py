@@ -69,6 +69,6 @@ class User(ADTID):
         if data.get("full_name", None):
             self.full_name = data["full_name"]
         if data.get("email", None):
-            self.email = data["new_email"]
+            self.email = data["email"]
         if data.get("avatar", None):
             self.avatar = data["avatar"]
