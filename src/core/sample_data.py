@@ -47,7 +47,7 @@ class SampleData():
     def make_users(self):
         from tools.password import generate_hash
 
-        for i in range(10):
+        for i in range(20):
             username = "user-{}".format(i + 1)
             user = user_entities.User(
                 username=username,
@@ -77,7 +77,7 @@ class SampleData():
                 is_public=self.sd.boolean(),
                 forked_from=random.choice(self.idea_ids) if self.idea_ids and self.sd.int(1, 8) == 1 else None,
                 comments_count=self.sd.int(0, 10),
-                reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 10) for j in range(self.sd.int(0, 3))},
+                reactions_counts={self.sd.choice(sample_emojis): self.sd.int(1, 5) for j in range(self.sd.int(0, 3))},
             )
             idea = idea_repository.create(idea)
             self.idea_ids.append(idea.id)
@@ -108,6 +108,24 @@ class SampleData():
                 )
                 idea_repository.create_comment(comment)
                 print("Comment '{}' created.".format(comment.uuid))
+
+            excluded_ids = []
+            for code, count in idea.reactions_counts.items():
+                for j in range(count):
+                    while True:
+                        user_id = random.choice(self.user_ids)
+                        if not user_id in excluded_ids:
+                            excluded_ids.append(user_id)
+                            break
+                    reaction = idea_entities.IdeaReaction(
+                        uuid=uuid.uuid4().hex,
+                        code=code,
+                        owner_id=user_id,
+                        idea_id=idea.id,
+                        created_at=arrow.get(self.sd.past_datetime()),
+                    )
+                    idea_repository.create_reaction(reaction)
+                    print("Reaction '{}' created.".format(reaction.uuid))
 
     def make_projects(self):
         for i in range(20):

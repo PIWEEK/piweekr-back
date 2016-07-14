@@ -168,3 +168,51 @@ class IdeaCommentsList(Handler):
     @login_required
     def delete(self, request, idea_uuid):
         raise NotImplementedError("TODO")
+
+
+#######################################
+## Reaction
+#######################################
+
+class IdeaReactionsList(Handler):
+    def get(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        reactions = idea_actions.list_reactions(idea)
+        return responses.Ok([
+            to_plain(reaction, ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            )
+            for reaction in reactions
+        ])
+
+    @login_required
+    def post(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        validator = idea_entities.IdeaReactionForCreateValidator(request.body)
+        if validator.is_valid():
+            reaction = idea_actions.create_reaction(
+                request.user,
+                idea,
+                idea_entities.IdeaReactionForCreate(**validator.cleaned_data)
+            )
+            return responses.Ok(to_plain(
+                reaction,
+                ignore_fields=["id"],
+                relationships = {
+                    "owner": {"ignore_fields": ["id", "password"]},
+                }
+            ))
+        else:
+            return responses.BadRequest(validator.errors)
+
+    @login_required
+    def delete(self, request, idea_uuid):
+        raise NotImplementedError("TODO")

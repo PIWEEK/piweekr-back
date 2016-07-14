@@ -61,6 +61,17 @@ class Idea(ADTID):
         if self.comments_count > 0:
             self.comments_count -= 1
 
+    def increase_reaction_count(self, code):
+        if not code in self.reactions_counts:
+            self.reactions_counts[code] = 0
+        self.reactions_counts[code] += 1
+
+    def decrease_reaction_count(self, code):
+        if code in self.reactions_counts:
+            self.reactions_counts[code] -= 1
+            if self.reactions_counts[code] <= 0:
+                del self.reactions_counts[code]
+
 
 class IdeaHasOwner(Relationship1N):
     role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
@@ -134,4 +145,39 @@ class IdeaCommentHasOwner(Relationship1N):
 class IdeaCommentFromIdea(Relationship1N):
     role_1 = RoleSingle(role_class=Idea, role_name="idea")
     role_n = RoleMulti(role_class=IdeaComment, role_name="comments", role_fk="idea_id", required=True)
+
+
+#######################################
+## Reaction
+#######################################
+
+class IdeaReactionForCreate(ADTID):
+    code = StrField()
+
+
+class IdeaReactionForCreateValidator(v.Validator):
+    schema = b.schema({
+        "code": b.And(
+            t.String(),
+            s.NotEmpty(),
+        )
+    })
+
+
+class IdeaReaction(ADTID):
+    uuid = StrField()
+    code = StrField()
+    owner_id = IntField()
+    idea_id = IntField()
+    created_at = ArrowDateTimeField()
+
+
+class IdeaReactionHasOwner(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="owner")
+    role_n = RoleMulti(role_class=IdeaReaction, role_name="idea_reactions", role_fk="owner_id", required=True)
+
+
+class IdeaReactionFromIdea(Relationship1N):
+    role_1 = RoleSingle(role_class=Idea, role_name="idea")
+    role_n = RoleMulti(role_class=IdeaReaction, role_name="reactions", role_fk="idea_id", required=True)
 

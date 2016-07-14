@@ -251,3 +251,95 @@ def retrieve_comment(comment_id):
             )
         )
     return comment
+
+
+#######################################
+## Reaction
+#######################################
+
+repo.add_adt_table(
+    idea_entities.IdeaReaction,
+    "idea_reactions",
+)
+
+
+def create_reaction(new_reaction):
+    with repo.context() as context:
+        reaction = repo.insert_adt(context, repo.idea_reactions, new_reaction)
+    return reaction
+
+
+def retrieve_reaction_list(idea):
+    with repo.context() as context:
+        reactions = repo.retrieve_joined_adts(
+            context,
+            idea_entities.IdeaReaction,
+            {"idea_reactions": idea_entities.IdeaReaction,
+             "ideas": idea_entities.Idea,
+             "users": user_entities.User},
+            select(
+                [repo.idea_reactions, repo.ideas, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.idea_reactions.join(
+                    repo.ideas,
+                    repo.idea_reactions.c.idea_id == repo.ideas.c.id
+                )
+                .join(
+                    repo.users,
+                    repo.idea_reactions.c.owner_id == repo.users.c.id
+                )
+            ).where(
+                repo.idea_reactions.c.idea_id == idea.id
+            ).order_by(repo.idea_reactions.c.created_at)
+        )
+    return reactions
+
+
+def retrieve_reaction(reaction_id):
+    with repo.context() as context:
+        reaction = repo.retrieve_joined_adt(
+            context,
+            idea_entities.IdeaReaction,
+            {"idea_reactions": idea_entities.IdeaReaction,
+             "ideas": idea_entities.Idea,
+             "users": user_entities.User},
+            select(
+                [repo.idea_reactions, repo.ideas, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.idea_reactions.join(
+                    repo.ideas,
+                    repo.idea_reactions.c.idea_id == repo.ideas.c.id
+                )
+                .join(
+                    repo.users,
+                    repo.idea_reactions.c.owner_id == repo.users.c.id
+                )
+            ).where(
+                repo.idea_reactions.c.id == reaction_id
+            )
+        )
+    return reaction
+
+
+def retrieve_reaction_of_user(idea_id, user_id):
+    with repo.context() as context:
+        reaction = repo.retrieve_single_adt(
+            context,
+            idea_entities.IdeaReaction,
+            select(
+                [repo.idea_reactions]
+            ).where(
+                (repo.idea_reactions.c.idea_id == idea_id) &
+                (repo.idea_reactions.c.owner_id == user_id)
+            )
+        )
+    return reaction
+
+
+def delete_reaction(reaction):
+    with repo.context() as context:
+        row_count = repo.delete_adt(context, repo.idea_reactions, reaction)
+        return row_count
+

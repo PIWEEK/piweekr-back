@@ -147,7 +147,7 @@ def remove_invited_user(user, idea, invited_username):
 ## Comment
 #######################################
 
-def create_comment(owner, idea,  comment_for_create):
+def create_comment(owner, idea, comment_for_create):
     if not idea.is_public and idea.owner_id != owner.id:
         invited = idea_repository.retrieve_invited(idea.id, owner.id)
         if not invited:
@@ -171,3 +171,40 @@ def create_comment(owner, idea,  comment_for_create):
 def list_comments(idea):
     comments = idea_repository.retrieve_comment_list(idea)
     return comments
+
+
+#######################################
+## Reaction
+#######################################
+
+def create_reaction(owner, idea, reaction_for_create):
+    if not idea.is_public and idea.owner_id != owner.id:
+        invited = idea_repository.retrieve_invited(idea.id, owner.id)
+        if not invited:
+            raise exceptions.Forbidden("Only invited users can react")
+
+    existing_reaction = idea_repository.retrieve_reaction_of_user(idea.id, owner.id)
+    if existing_reaction:
+        idea.decrease_reaction_count(existing_reaction.code)
+        idea_repository.update(idea)
+        idea_repository.delete_reaction(existing_reaction)
+
+    reaction = idea_entities.IdeaReaction(
+        uuid = uuid.uuid4().hex,
+        code = reaction_for_create.code,
+        owner_id = owner.id,
+        idea_id = idea.id,
+        created_at = arrow.now(),
+    )
+
+    idea.increase_reaction_count(reaction.code)
+    idea_repository.update(idea)
+
+    reaction = idea_repository.create_reaction(reaction)
+    return idea_repository.retrieve_reaction(reaction.id)
+
+
+def list_reactions(idea):
+    reactions = idea_repository.retrieve_reaction_list(idea)
+    return reactions
+
