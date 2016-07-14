@@ -28,6 +28,12 @@ class ProjectsList(Handler):
                             "user": {"ignore_fields": ["id", "password"]},
                         }
                     },
+                    "users_participant": {
+                        "ignore_fields": ["id"],
+                        "relationships": {
+                            "user": {"ignore_fields": ["id", "password"]},
+                        }
+                    }
                 }
             )
             for project in projects

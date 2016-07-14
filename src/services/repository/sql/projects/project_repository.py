@@ -73,6 +73,22 @@ def list():
                     repo.projects_interested.c.project_id == project.id
                 ).order_by(repo.users.c.full_name)
             )
+            participant = repo.retrieve_joined_adts(
+                context,
+                project_entities.ProjectParticipant,
+                {"projects_participant": project_entities.ProjectParticipant, "users": user_entities.User},
+                select(
+                    [repo.projects_participant, repo.users],
+                    use_labels=True
+                ).select_from(
+                    repo.projects_participant.join(
+                        repo.users,
+                        repo.projects_participant.c.user_id == repo.users.c.id
+                    )
+                ).where(
+                    repo.projects_participant.c.project_id == project.id
+                ).order_by(repo.users.c.full_name)
+            )
     return projects
 
 
@@ -160,13 +176,13 @@ def delete_interested(interested):
 
 repo.add_adt_table(
     project_entities.ProjectParticipant,
-    "projects_participants",
+    "projects_participant",
 )
 
 
 def create_participant(project_participant):
     with repo.context() as context:
-        project = repo.insert_adt(context, repo.projects_participants, project_participant)
+        project = repo.insert_adt(context, repo.projects_participant, project_participant)
     return project_participant
 
 
@@ -175,17 +191,17 @@ def retrieve_participant_list(project_id):
         participants = repo.retrieve_joined_adts(
             context,
             project_entities.ProjectParticipant,
-            {"projects_participants": project_entities.ProjectParticipant, "users": user_entities.User},
+            {"projects_participant": project_entities.ProjectParticipant, "users": user_entities.User},
             select(
-                [repo.projects_participants, repo.users],
+                [repo.projects_participant, repo.users],
                 use_labels=True
             ).select_from(
-                repo.projects_participants.join(
+                repo.projects_participant.join(
                     repo.users,
-                    repo.projects_participants.c.user_id == repo.users.c.id
+                    repo.projects_participant.c.user_id == repo.users.c.id
                 )
             ).where(
-                repo.projects_participants.c.project_id == project_id
+                repo.projects_participant.c.project_id == project_id
             ).order_by(repo.users.c.full_name)
         )
     return participants
@@ -197,10 +213,10 @@ def retrieve_participant(project_id, user_id):
             context,
             project_entities.ProjectParticipant,
             select(
-                [repo.projects_participants]
+                [repo.projects_participant]
             ).where(
-                (repo.projects_participants.c.project_id == project_id) &
-                (repo.projects_participants.c.user_id == user_id)
+                (repo.projects_participant.c.project_id == project_id) &
+                (repo.projects_participant.c.user_id == user_id)
             )
         )
     return participant
@@ -208,7 +224,7 @@ def retrieve_participant(project_id, user_id):
 
 def delete_participant(participant):
     with repo.context() as context:
-        row_count = repo.delete_adt(context, repo.projects_participants, participant)
+        row_count = repo.delete_adt(context, repo.projects_participant, participant)
         return row_count
 
 

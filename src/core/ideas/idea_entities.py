@@ -68,7 +68,6 @@ class Idea(ADTID):
     comments_count = IntField()
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
 
-
     def edit(self, data):
         if data.get("title", None):
             self.title = data["title"]
