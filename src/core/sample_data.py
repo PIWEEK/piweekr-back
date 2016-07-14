@@ -56,8 +56,8 @@ class SampleData():
                 full_name=self.sd.fullname(locale='us'),
                 email=self.sd.word() + '@piweekr.org',
                 avatar = {
-                    "head": self.sd.int(1, 10),
-                    "body": self.sd.int(1, 10),
+                    "head": self.sd.int(1, 23),
+                    "body": self.sd.int(1, 23),
                     "legs": self.sd.int(1, 10),
                     "background": self.sd.choice(sample_colors),
                 }
