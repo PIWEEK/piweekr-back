@@ -18,8 +18,8 @@ sample_colors = ["#FC8EAC", "#A5694F", "#002e33", "#67CF00", "#71A6D2", "#FFF8E7
  		 "#40826D", "#708090", "#761CEC", "#0F0F0F", "#D70A53", "#CC0000", "#FFCC00", "#FFFF00",
 		 "#C0FF33", "#B6DA55", "#2099DB"]
 
-sample_technologies = ["python", "groovy", "c", "html", "css", "angualr", "cloujure", "cloujurescript", "IoT",
-                       "music", "UX", "Design", "SASS", "CSS", "HTML", "PostCSS"]
+sample_technologies = ["python", "groovy", "C++", "PHP", "css", "Angular2", "Clojure", "Clojurescript", "IoT",
+                       "music", "UX", "Design", "SASS", "CSS", "HTML", "Jade", "Cacharreo", "PostCSS"]
 
 sample_emojis = ["smile", "thumbsdown", "thumbsup", "poo", "confused", "dancer", "beer"]
 
@@ -162,4 +162,3 @@ class SampleData():
                 )
                 project_repository.create_comment(comment)
                 print("Comment '{}' created.".format(comment.uuid))
-
