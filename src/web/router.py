@@ -39,6 +39,8 @@ urls = [
         project_handlers.ProjectDetail(), methods=["get", "put", "delete"]),
     url(PREFIX + "/projects/<string:project_uuid>/interested",
         project_handlers.ProjectInterestedList(), methods=["get", "post", "delete"]),
+    url(PREFIX + "/projects/<string:project_uuid>/participants",
+        project_handlers.ProjectParticipantsList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/projects/<string:project_uuid>/comments",
         project_handlers.ProjectCommentsList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/projects/<string:project_uuid>/reactions",

@@ -155,6 +155,64 @@ def delete_interested(interested):
 
 
 #######################################
+## Participants
+#######################################
+
+repo.add_adt_table(
+    project_entities.ProjectParticipant,
+    "projects_participants",
+)
+
+
+def create_participant(project_participant):
+    with repo.context() as context:
+        project = repo.insert_adt(context, repo.projects_participants, project_participant)
+    return project_participant
+
+
+def retrieve_participant_list(project_id):
+    with repo.context() as context:
+        participants = repo.retrieve_joined_adts(
+            context,
+            project_entities.ProjectParticipant,
+            {"projects_participants": project_entities.ProjectParticipant, "users": user_entities.User},
+            select(
+                [repo.projects_participants, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.projects_participants.join(
+                    repo.users,
+                    repo.projects_participants.c.user_id == repo.users.c.id
+                )
+            ).where(
+                repo.projects_participants.c.project_id == project_id
+            ).order_by(repo.users.c.full_name)
+        )
+    return participants
+
+
+def retrieve_participant(project_id, user_id):
+    with repo.context() as context:
+        participant = repo.retrieve_single_adt(
+            context,
+            project_entities.ProjectParticipant,
+            select(
+                [repo.projects_participants]
+            ).where(
+                (repo.projects_participants.c.project_id == project_id) &
+                (repo.projects_participants.c.user_id == user_id)
+            )
+        )
+    return participant
+
+
+def delete_participant(participant):
+    with repo.context() as context:
+        row_count = repo.delete_adt(context, repo.projects_participants, participant)
+        return row_count
+
+
+#######################################
 ## Comment
 #######################################
 

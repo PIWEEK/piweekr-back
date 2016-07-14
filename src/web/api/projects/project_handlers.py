@@ -89,6 +89,45 @@ class ProjectInterestedList(Handler):
 
 
 #######################################
+## Participants
+#######################################
+
+class ProjectParticipantsList(Handler):
+    def get(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        participant_list = project_actions.list_participant(project)
+        return responses.Ok([
+            to_plain(participant, ignore_fields=["id", "project_id"],
+                relationships = {
+                    "user": {"ignore_fields": ["id", "password"]},
+                }
+            )
+            for participant in participant_list
+        ])
+
+    @login_required
+    def post(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        project_actions.add_participant_user(project, request.user)
+        return responses.Ok()
+
+    @login_required
+    def delete(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        project_actions.remove_participant_user(project, request.user)
+        return responses.Ok()
+
+
+#######################################
 ## Comment
 #######################################
 

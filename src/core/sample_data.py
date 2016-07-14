@@ -157,6 +157,7 @@ class SampleData():
             print("Project '{}' created.".format(project.uuid))
 
             excluded_ids = [project.owner_id]
+
             for j in range(self.sd.int(0, 4)):
                 while True:
                     user_id = random.choice(self.user_ids)
@@ -168,6 +169,18 @@ class SampleData():
                     user_id=user_id,
                 )
                 interested = project_repository.create_interested(interested)
+
+            for j in range(self.sd.int(0, 4)):
+                while True:
+                    user_id = random.choice(self.user_ids)
+                    if not user_id in excluded_ids:
+                        excluded_ids.append(user_id)
+                        break
+                participant = project_entities.ProjectParticipant(
+                    project_id=project.id,
+                    user_id=user_id,
+                )
+                participant = project_repository.create_participant(participant)
 
             for j in range(project.comments_count):
                 comment = project_entities.ProjectComment(

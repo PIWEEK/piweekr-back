@@ -79,6 +79,25 @@ class ProjectInterestedHasUser(Relationship1N):
 
 
 #######################################
+## Participants
+#######################################
+
+class ProjectParticipant(ADTID):
+    project_id = IntField()
+    user_id = IntField()
+
+
+class ProjectParticipantHasProject(Relationship1N):
+    role_1 = RoleSingle(role_class=Project, role_name="project")
+    role_n = RoleMulti(role_class=ProjectParticipant, role_name="users_participant", role_fk="project_id", required=True)
+
+
+class ProjectParticipantHasUser(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="user")
+    role_n = RoleMulti(role_class=ProjectParticipant, role_name="projects_participant", role_fk="user_id", required=True)
+
+
+#######################################
 ## Piweek
 #######################################
 

@@ -50,7 +50,11 @@ def get_project(project_uuid):
 def add_interested_user(project, interested_user):
     interested = project_repository.retrieve_interested(project.id, interested_user.id)
     if interested:
-        raise exceptions.InconsistentData("User {} was already interested to the project".format(interested_user.username))
+        raise exceptions.InconsistentData("User {} was already interested in the project".format(interested_user.username))
+
+    participant = project_repository.retrieve_participant(project.id, interested_user.id)
+    if participant:
+        project_repository.delete_participant(participant)
 
     project_repository.create_interested(
         project_entities.ProjectInterested(
@@ -59,6 +63,7 @@ def add_interested_user(project, interested_user):
         )
     )
 
+
 def list_interested(project):
     return project_repository.retrieve_interested_list(project.id)
 
@@ -66,9 +71,42 @@ def list_interested(project):
 def remove_interested_user(project, interested_user):
     interested = project_repository.retrieve_interested(project.id, interested_user.id)
     if not interested:
-        raise exceptions.InconsistentData("User {} was not interested to the project".format(interested_user.username))
+        raise exceptions.InconsistentData("User {} was not interested in the project".format(interested_user.username))
 
     project_repository.delete_interested(interested)
+
+
+#######################################
+## Participants
+#######################################
+
+def add_participant_user(project, participant_user):
+    participant = project_repository.retrieve_participant(project.id, participant_user.id)
+    if participant:
+        raise exceptions.InconsistentData("User {} was already participant in the project".format(participant_user.username))
+
+    interested = project_repository.retrieve_interested(project.id, participant_user.id)
+    if interested:
+        project_repository.delete_interested(interested)
+
+    project_repository.create_participant(
+        project_entities.ProjectInterested(
+            project_id = project.id,
+            user_id = participant_user.id,
+        )
+    )
+
+
+def list_participant(project):
+    return project_repository.retrieve_participant_list(project.id)
+
+
+def remove_participant_user(project, participant_user):
+    participant = project_repository.retrieve_participant(project.id, participant_user.id)
+    if not participant:
+        raise exceptions.InconsistentData("User {} was not participant in the project".format(participant_user.username))
+
+    project_repository.delete_participant(participant)
 
 
 #######################################
