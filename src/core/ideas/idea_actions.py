@@ -204,12 +204,6 @@ def create_reaction(owner, idea, reaction_for_create):
         if not invited:
             raise exceptions.Forbidden("Only invited users can react")
 
-    existing_reaction = idea_repository.retrieve_reaction_of_user(idea.id, owner.id)
-    if existing_reaction:
-        idea.decrease_reaction_count(existing_reaction.code)
-        idea_repository.update(idea)
-        idea_repository.delete_reaction(existing_reaction)
-
     reaction = idea_entities.IdeaReaction(
         uuid = uuid.uuid4().hex,
         code = reaction_for_create.code,

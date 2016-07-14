@@ -107,7 +107,6 @@ OBJETO: reaction
 
   POST /api/v1/ideas/<uuid>/reactions
     añade una reacción, cuyo dueño será el usuario logado (campo code)
-    (si ya existía una reacción del mismo usuario, es reemplazada por la nueva)
 
 
 OBJETO: piweek
