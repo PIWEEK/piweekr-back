@@ -60,6 +60,9 @@ class ADT(metaclass=ADTMetaclass):
             assert value == None or isinstance(value, field.type), "'{}' must be {}".format(field_name, field.type)
         self.__dict__[field_name] = value
 
+    def to_dict(self):
+        return self.__dict__
+
 
 class StrField(Field):
     def __init__(self, *args, **kwargs):
