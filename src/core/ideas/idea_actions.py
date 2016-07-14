@@ -84,7 +84,15 @@ def promote_idea(user, idea):
     )
 
     from services.repository.sql.projects import project_repository
-    return project_repository.create(project)
+    project = project_repository.create(project)
+
+    for invited in idea_repository.retrieve_invited_list(idea.id):
+        project_repository.create_interested(
+            project_entities.ProjectInterested(
+                project_id = project.id,
+                user_id = invited.user_id,
+            )
+        )
 
 
 #######################################

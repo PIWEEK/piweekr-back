@@ -74,6 +74,64 @@ def retrieve_by_title(title):
 
 
 #######################################
+## Interesteds
+#######################################
+
+repo.add_adt_table(
+    project_entities.ProjectInterested,
+    "projects_interested",
+)
+
+
+def create_interested(project_interested):
+    with repo.context() as context:
+        project = repo.insert_adt(context, repo.projects_interested, project_interested)
+    return project_interested
+
+
+def retrieve_interested_list(project_id):
+    with repo.context() as context:
+        interested = repo.retrieve_joined_adts(
+            context,
+            project_entities.ProjectInterested,
+            {"projects_interested": project_entities.ProjectInterested, "users": user_entities.User},
+            select(
+                [repo.projects_interested, repo.users],
+                use_labels=True
+            ).select_from(
+                repo.projects_interested.join(
+                    repo.users,
+                    repo.projects_interested.c.user_id == repo.users.c.id
+                )
+            ).where(
+                repo.projects_interested.c.project_id == project_id
+            ).order_by(repo.users.c.full_name)
+        )
+    return interested
+
+
+def retrieve_interested(project_id, user_id):
+    with repo.context() as context:
+        interested = repo.retrieve_single_adt(
+            context,
+            project_entities.ProjectInterested,
+            select(
+                [repo.projects_interested]
+            ).where(
+                (repo.projects_interested.c.project_id == project_id) &
+                (repo.projects_interested.c.user_id == user_id)
+            )
+        )
+    return interested
+
+
+def delete_interested(interested):
+    with repo.context() as context:
+        row_count = repo.delete_adt(context, repo.projects_interested, interested)
+        return row_count
+
+
+#######################################
 ## Comment
 #######################################
 

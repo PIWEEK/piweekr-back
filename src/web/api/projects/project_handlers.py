@@ -27,6 +27,60 @@ class ProjectsList(Handler):
         ])
 
 
+class ProjectDetail(Handler):
+    def get(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        return responses.Ok(to_plain(project, ignore_fields=["id"]))
+
+    def put(self, request):
+        raise NotImplementedError("TODO")
+
+    def delete(self, request):
+        raise NotImplementedError("TODO")
+
+
+#######################################
+## Interested
+#######################################
+
+class ProjectInterestedList(Handler):
+    def get(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        interested_list = project_actions.list_interested(project)
+        return responses.Ok([
+            to_plain(interested, ignore_fields=["id", "project_id"],
+                relationships = {
+                    "user": {"ignore_fields": ["id", "password"]},
+                }
+            )
+            for interested in interested_list
+        ])
+
+    @login_required
+    def post(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        project_actions.add_interested_user(project, request.user)
+        return responses.Ok()
+
+    @login_required
+    def delete(self, request, project_uuid):
+        project = project_actions.get_project(project_uuid)
+        if not project:
+            return responses.NotFound()
+
+        project_actions.remove_interested_user(project, request.user)
+        return responses.Ok()
+
+
 #######################################
 ## Comment
 #######################################

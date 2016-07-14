@@ -41,6 +41,30 @@ class ProjectIsFromIdea(Relationship1N):
     role_n = RoleMulti(role_class=Project, role_name="projects", role_fk="idea_from_id", required=True)
 
 
+#######################################
+## Interested
+#######################################
+
+class ProjectInterested(ADTID):
+    project_id = IntField()
+    user_id = IntField()
+
+
+class ProjectInterestedHasProject(Relationship1N):
+    role_1 = RoleSingle(role_class=Project, role_name="project")
+    role_n = RoleMulti(role_class=ProjectInterested, role_name="projects_interested", role_fk="project_id", required=True)
+
+
+class ProjectInterestedHasUser(Relationship1N):
+    role_1 = RoleSingle(role_class=user_entities.User, role_name="user")
+    role_n = RoleMulti(role_class=ProjectInterested, role_name="projects_interested", role_fk="user_id", required=True)
+
+
+#######################################
+## Piweek
+#######################################
+
+
 # TODO:
 #from core.piweeks import piweek_entities
 #

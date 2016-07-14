@@ -84,17 +84,6 @@ class SampleData():
             self.idea_ids.append(idea.id)
             print("Idea '{}' created.".format(idea.uuid))
 
-            for j in range(idea.comments_count):
-                comment = idea_entities.IdeaComment(
-                    uuid=uuid.uuid4().hex,
-                    content=self.sd.long_sentence(),
-                    owner_id=random.choice(self.user_ids),
-                    idea_id=idea.id,
-                    created_at=arrow.get(self.sd.past_datetime()),
-                )
-                idea_repository.create_comment(comment)
-                print("Comment '{}' created.".format(comment.uuid))
-
             if not idea.is_public:
                 if self.sd.int(1, 3) == 1:
                     excluded_ids = [idea.owner_id]
@@ -109,6 +98,17 @@ class SampleData():
                             user_id=user_id,
                         )
                         invited = idea_repository.create_invited(invited)
+
+            for j in range(idea.comments_count):
+                comment = idea_entities.IdeaComment(
+                    uuid=uuid.uuid4().hex,
+                    content=self.sd.long_sentence(),
+                    owner_id=random.choice(self.user_ids),
+                    idea_id=idea.id,
+                    created_at=arrow.get(self.sd.past_datetime()),
+                )
+                idea_repository.create_comment(comment)
+                print("Comment '{}' created.".format(comment.uuid))
 
     def make_projects(self):
         for i in range(20):
@@ -138,6 +138,19 @@ class SampleData():
             project = project_repository.create(project)
             self.project_ids.append(project.id)
             print("Project '{}' created.".format(project.uuid))
+
+            excluded_ids = [project.owner_id]
+            for j in range(self.sd.int(0, 4)):
+                while True:
+                    user_id = random.choice(self.user_ids)
+                    if not user_id in excluded_ids:
+                        excluded_ids.append(user_id)
+                        break
+                interested = project_entities.ProjectInterested(
+                    project_id=project.id,
+                    user_id=user_id,
+                )
+                interested = project_repository.create_interested(interested)
 
             for j in range(project.comments_count):
                 comment = project_entities.ProjectComment(

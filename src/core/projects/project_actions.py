@@ -3,6 +3,9 @@
 import arrow
 
 from services.repository.sql.projects import project_repository
+from services.repository.sql.users import user_repository
+
+from core import exceptions
 
 from . import project_entities
 
@@ -37,6 +40,34 @@ def list_projects():
 
 def get_project(project_uuid):
     return project_repository.retrieve_by_uuid(project_uuid)
+
+
+#######################################
+## Interesteds
+#######################################
+
+def add_interested_user(project, interested_user):
+    interested = project_repository.retrieve_interested(project.id, interested_user.id)
+    if interested:
+        raise exceptions.InconsistentData("User {} was already interested to the project".format(interested_user.username))
+
+    project_repository.create_interested(
+        project_entities.ProjectInterested(
+            project_id = project.id,
+            user_id = interested_user.id,
+        )
+    )
+
+def list_interested(project):
+    return project_repository.retrieve_interested_list(project.id)
+
+
+def remove_interested_user(project, interested_user):
+    interested = project_repository.retrieve_interested(project.id, interested_user.id)
+    if not interested:
+        raise exceptions.InconsistentData("User {} was not interested to the project".format(interested_user.username))
+
+    project_repository.delete_interested(interested)
 
 
 #######################################
