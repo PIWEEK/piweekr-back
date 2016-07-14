@@ -18,6 +18,7 @@ class IdeaForCreate(ADTID):
     title = StrField()
     description = StrField()
     is_public = BoolField()
+    invited_usernames = Field(type=list, null=True) # List of usernames
 
 
 class IdeaForCreateValidator(v.Validator):
@@ -31,6 +32,7 @@ class IdeaForCreateValidator(v.Validator):
             s.NotEmpty(),
         ),
         "is_public": t.Bool(),
+        b.Optional("invited_usernames"): t.List(),
     })
 
 
@@ -79,13 +81,13 @@ class IdeaInvitedHasUser(Relationship1N):
 
 class IdeaAddInvitedValidator(v.Validator):
     schema = b.schema({
-        "invited_user_names": t.List(),
+        "invited_usernames": t.List(),
     })
 
 
 class IdeaRemoveInvitedValidator(v.Validator):
     schema = b.schema({
-        "invited_user_name": b.And(
+        "invited_username": b.And(
             t.String(),
             s.NotEmpty(),
         ),

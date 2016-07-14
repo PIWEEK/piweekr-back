@@ -80,7 +80,7 @@ class IdeaInvitedList(Handler):
 
         validator = idea_entities.IdeaAddInvitedValidator(request.body)
         if validator.is_valid():
-            idea_actions.invite_users(request.user, idea, validator.cleaned_data["invited_user_names"])
+            idea_actions.invite_users(request.user, idea, validator.cleaned_data["invited_usernames"])
             return responses.Ok()
         else:
             return responses.BadRequest(validator.errors)
@@ -93,7 +93,7 @@ class IdeaInvitedList(Handler):
 
         validator = idea_entities.IdeaRemoveInvitedValidator(request.body)
         if validator.is_valid():
-            idea_actions.remove_invited_user(request.user, idea, validator.cleaned_data["invited_user_name"])
+            idea_actions.remove_invited_user(request.user, idea, validator.cleaned_data["invited_username"])
             return responses.Ok()
         else:
             return responses.BadRequest(validator.errors)

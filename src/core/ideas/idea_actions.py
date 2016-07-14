@@ -26,7 +26,25 @@ def create_idea(owner, idea_for_create):
         comments_count = 0,
         reactions_counts = {},
     )
-    return idea_repository.create(idea)
+    idea = idea_repository.create(idea)
+
+    if idea_for_create.invited_usernames:
+        if idea.is_public:
+            raise exceptions.InconsistentData("Only private ideas can have invited users")
+        for invited_username in idea_for_create.invited_usernames:
+            invited_user = user_repository.retrieve_by_username(invited_username)
+            if not invited_user:
+                raise exceptions.InconsistentData("Can't find user {}".format(invited_username))
+            if invited_user.id == idea.owner_id:
+                raise exceptions.InconsistentData("You cannot invite yourself to the idea")
+            idea_repository.create_invited(
+                idea_entities.IdeaInvited(
+                    idea_id = idea.id,
+                    user_id = invited_user.id,
+                )
+            )
+
+    return idea
 
 
 def update_idea(owner, idea):
