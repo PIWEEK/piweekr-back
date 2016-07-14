@@ -13,6 +13,7 @@ from . import project_entities
 
 def create_new_project(project_for_create):
     project = project_entities.Project(
+        uuid = uuid.uuid4().hex,
         title = project_for_create.title,
         description = project_for_create.description,
         technologies = project_for_create.technologies,

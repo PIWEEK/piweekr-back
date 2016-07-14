@@ -38,6 +38,7 @@ class IdeaForCreateValidator(v.Validator):
 
 class Idea(ADTID):
     uuid = StrField()
+    is_active = BoolField()
     title = StrField()
     description = StrField()
     owner_id = IntField()
@@ -46,6 +47,12 @@ class Idea(ADTID):
     forked_from = IntField(null=True)
     comments_count = IntField()
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
+
+    def deactivate(self):
+        self.is_active = False
+
+    def activate(self):
+        self.is_active = True
 
     def increase_comment_count(self):
         self.comments_count += 1

@@ -16,7 +16,7 @@ class IdeasList(Handler):
     def get(self, request):
         ideas = idea_actions.list_ideas()
         return responses.Ok([
-            to_plain(idea, ignore_fields=["id"],
+            to_plain(idea, ignore_fields=["id", "is_active"],
                 relationships = {
                     "owner": {"ignore_fields": ["id", "password"]},
                 }
@@ -32,7 +32,7 @@ class IdeasList(Handler):
                 request.user,
                 idea_entities.IdeaForCreate(**validator.cleaned_data)
             )
-            return responses.Ok(to_plain(idea, ignore_fields=["id"]))
+            return responses.Ok(to_plain(idea, ignore_fields=["id", "is_active"]))
         else:
             return responses.BadRequest(validator.errors)
 
@@ -43,13 +43,24 @@ class IdeaDetail(Handler):
         if not idea:
             return responses.NotFound()
 
-        return responses.Ok(to_plain(idea, ignore_fields=["id"]))
+        return responses.Ok(to_plain(idea, ignore_fields=["id", "is_active"]))
 
     def put(self, request):
         raise NotImplementedError("TODO")
 
     def delete(self, request):
         raise NotImplementedError("TODO")
+
+
+class IdeaPromote(Handler):
+    def post(self, request, idea_uuid):
+        idea = idea_actions.get_idea(idea_uuid)
+        if not idea:
+            return responses.NotFound()
+
+        project = idea_actions.promote_idea(request.user, idea)
+
+        return responses.Ok(to_plain(project, ignore_fields=["id"]))
 
 
 #######################################

@@ -17,6 +17,7 @@ import arrow
 def create_idea(owner, idea_for_create):
     idea = idea_entities.Idea(
         uuid = uuid.uuid4().hex,
+        is_active = True,
         title = idea_for_create.title,
         description = idea_for_create.description,
         owner_id = owner.id,
@@ -57,6 +58,33 @@ def list_ideas():
 
 def get_idea(idea_uuid):
     return idea_repository.retrieve_by_uuid(idea_uuid)
+
+
+def promote_idea(user, idea):
+    if idea.owner_id != user.id:
+        raise exceptions.Forbidden("Only owner can promote an idea")
+
+    idea.deactivate()
+    idea_repository.update(idea)
+
+    from core.projects import project_entities
+    project = project_entities.Project(
+        uuid = uuid.uuid4().hex,
+        title = idea.title,
+        description = idea.description,
+        technologies = [],
+        needs = "",
+        logo = "",
+        piweek_id = 1, # TODO
+        idea_from_id = idea.id,
+        owner_id = idea.owner_id,
+        created_at = arrow.utcnow(),
+        comments_count=0,
+        reactions_counts={}
+    )
+
+    from services.repository.sql.projects import project_repository
+    return project_repository.create(project)
 
 
 #######################################

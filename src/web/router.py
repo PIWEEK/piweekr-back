@@ -25,6 +25,8 @@ urls = [
         idea_handlers.IdeaInvitedList(), methods=["get", "post", "delete"]),
     url(PREFIX + "/ideas/<string:idea_uuid>/comments",
         idea_handlers.IdeaCommentsList(), methods=["get", "post", "delete"]),
+    url(PREFIX + "/ideas/<string:idea_uuid>/promote",
+        idea_handlers.IdeaPromote(), methods=["post"]),
 
     # Projects
     url(PREFIX + "/projects",

@@ -70,6 +70,7 @@ class SampleData():
         for i in range(50):
             idea = idea_entities.Idea(
                 uuid=uuid.uuid4().hex,
+                is_active=True,
                 title=self.sd.words(1, 4).capitalize(),
                 description=self.sd.paragraphs(1, 3),
                 owner_id=random.choice(self.user_ids),
@@ -110,7 +111,16 @@ class SampleData():
                         invited = idea_repository.create_invited(invited)
 
     def make_projects(self):
-        for i in range(50):
+        for i in range(20):
+
+            if self.sd.int(1, 5) == 1:
+                idea_from = None
+            else:
+                ideas = idea_repository.list() # This only retrieves active ideas
+                idea_from = random.choice(ideas)
+                idea_from.deactivate()
+                idea_repository.update(idea_from)
+
             project = project_entities.Project(
                 uuid=uuid.uuid4().hex,
                 title=self.sd.words(1, 4).capitalize(),
@@ -118,8 +128,8 @@ class SampleData():
                 technologies=[self.sd.choice(sample_technologies) for i in range(self.sd.int(0, 5))],
                 needs=self.sd.paragraphs(1, 2),
                 logo=self.sd.choice(sample_logos),
-                piweek_id=1,
-                idea_from_id=random.choice(self.idea_ids),
+                piweek_id=1, # TODO
+                idea_from_id=idea_from.id if idea_from else None,
                 owner_id=random.choice(self.user_ids),
                 created_at=arrow.get(self.sd.past_datetime()),
                 comments_count=self.sd.int(0, 10),
@@ -139,3 +149,4 @@ class SampleData():
                 )
                 project_repository.create_comment(comment)
                 print("Comment '{}' created.".format(comment.uuid))
+

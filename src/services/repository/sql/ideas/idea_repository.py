@@ -50,6 +50,8 @@ def list():
                     repo.users,
                     repo.ideas.c.owner_id == repo.users.c.id
                 )
+            ).where(
+                repo.ideas.c.is_active == True
             ).order_by(repo.ideas.c.title)
         )
     return ideas
@@ -63,7 +65,8 @@ def retrieve_by_uuid(idea_uuid):
             select(
                 [repo.ideas]
             ).where(
-                repo.ideas.c.uuid == idea_uuid
+                (repo.ideas.c.uuid == idea_uuid) &
+                (repo.ideas.c.is_active == True)
             )
         )
     return idea
