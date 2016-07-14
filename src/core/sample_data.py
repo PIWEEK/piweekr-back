@@ -124,9 +124,9 @@ class SampleData():
             project = project_entities.Project(
                 uuid=uuid.uuid4().hex,
                 title=self.sd.words(1, 4).capitalize(),
-                description=self.sd.paragraphs(1, 3),
+                description=self.sd.long_sentence(),
                 technologies=[self.sd.choice(sample_technologies) for i in range(self.sd.int(0, 5))],
-                needs=self.sd.paragraphs(1, 2),
+                needs=self.sd.short_sentence(),
                 logo=self.sd.choice(sample_logos),
                 piweek_id=1, # TODO
                 idea_from_id=idea_from.id if idea_from else None,
