@@ -27,6 +27,10 @@ sample_logos = ["http://createfunnylogo.com/blazed/MetanOR.jpg",
                 "http://createfunnylogo.com/logo/techcrunch/Virtual%20Gym.jpg",
                 "http://createfunnylogo.com/logo/flickr/PiWeekr.jpg"]
 
+from . import sample_data_ideas
+from . import sample_data_projects
+
+
 class SampleData():
     sd = SampleData(seed=1234567890)
 
@@ -66,12 +70,15 @@ class SampleData():
             print("User '{}' created.".format(user.email))
 
     def make_ideas(self):
-        for i in range(50):
+        # for i in range(50):
+        for (title, description, owner) in sample_data_ideas.ideas:
             idea = idea_entities.Idea(
                 uuid=uuid.uuid4().hex,
                 is_active=True,
-                title=self.sd.words(1, 4).capitalize(),
-                description=self.sd.paragraphs(1, 3),
+                # title=self.sd.words(1, 4).capitalize(),
+                title=title,
+                # description=self.sd.paragraphs(1, 3),
+                description=description,
                 owner_id=random.choice(self.user_ids),
                 created_at=arrow.get(self.sd.past_datetime()),
                 is_public=self.sd.boolean(),
@@ -128,7 +135,8 @@ class SampleData():
                     print("Reaction '{}' created.".format(reaction.uuid))
 
     def make_projects(self):
-        for i in range(20):
+        # for i in range(20):
+        for (title, owner, description, technologies, needs, interested, more_info, participants) in sample_data_projects.projects:
 
             if self.sd.int(1, 5) == 1:
                 idea_from = None
@@ -140,10 +148,14 @@ class SampleData():
 
             project = project_entities.Project(
                 uuid=uuid.uuid4().hex,
-                title=self.sd.words(1, 4).capitalize(),
-                description=self.sd.long_sentence(),
-                technologies=[self.sd.choice(sample_technologies) for i in range(self.sd.int(0, 5))],
-                needs=self.sd.short_sentence(),
+                # title=self.sd.words(1, 4).capitalize(),
+                title=title,
+                # description=self.sd.long_sentence(),
+                description=description,
+                # technologies=[self.sd.choice(sample_technologies) for i in range(self.sd.int(0, 5))],
+                technologies=technologies,
+                # needs=self.sd.short_sentence(),
+                needs=needs,
                 logo=self.sd.choice(sample_logos),
                 piweek_id=1, # TODO
                 idea_from_id=idea_from.id if idea_from else None,

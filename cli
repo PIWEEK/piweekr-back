@@ -13,7 +13,6 @@ from core.ideas import idea_entities
 from core.ideas import idea_actions
 from core.projects import project_entities
 from core.projects import project_actions
-# from core import exceptions
 
 
 @click.group()
