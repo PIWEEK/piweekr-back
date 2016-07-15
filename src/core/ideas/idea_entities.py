@@ -69,11 +69,11 @@ class Idea(ADT_WITH_ID):
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
 
     def edit(self, data):
-        if data.get("title", None):
+        if "title" in data:
             self.title = data["title"]
-        if data.get("description", None):
+        if "description" in data:
             self.description = data["description"]
-        if data.get("is_public", None) != None:
+        if "is_public" in data:
             self.is_public = data["is_public"]
 
     def deactivate(self):
@@ -86,8 +86,11 @@ class Idea(ADT_WITH_ID):
         self.comments_count += 1
 
     def decrease_comment_count(self):
-        if self.comments_count > 0:
-            self.comments_count -= 1
+        """
+        pre:
+            self.comments_count > 0"
+        """
+        self.comments_count -= 1
 
     def increase_reaction_count(self, code):
         if not code in self.reactions_counts:
@@ -95,10 +98,14 @@ class Idea(ADT_WITH_ID):
         self.reactions_counts[code] += 1
 
     def decrease_reaction_count(self, code):
-        if code in self.reactions_counts:
-            self.reactions_counts[code] -= 1
-            if self.reactions_counts[code] <= 0:
-                del self.reactions_counts[code]
+        """
+        pre:
+            code in self.reactions_counts
+            self.reactions_counts[code] > 0
+        """
+        self.reactions_counts[code] -= 1
+        if self.reactions_counts[code] <= 0:
+            del self.reactions_counts[code]
 
 
 class IdeaHasOwner(Relationship1N):

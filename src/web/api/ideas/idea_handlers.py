@@ -1,11 +1,14 @@
 from anillo.http import responses
 
 from core.ideas import idea_entities, idea_actions
+from core.users import user_entities, user_actions
 
 from tools.adt.converter import to_plain, from_plain
 
 from web.handler import Handler
 from web.decorators import login_required
+
+from web.api.loaders_and_checkers import *
 
 
 #######################################
@@ -51,10 +54,7 @@ class IdeasList(Handler):
 
 class IdeaDetail(Handler):
     def get(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
-
+        idea = load_idea(idea_uuid)
         return responses.Ok(to_plain(
             idea,
             ignore_fields=["id", "is_active"],
@@ -71,12 +71,8 @@ class IdeaDetail(Handler):
 
     @login_required
     def patch(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
-
-        if request.user.id != idea.owner_id:
-            return responses.Forbidden({"error": "You can only update your ideas"})
+        idea = load_idea(idea_uuid)
+        check_user_is_owner_of_idea(request.user, idea)
 
         validator = idea_entities.IdeaForUpdateValidator(request.body)
         if validator.is_valid():
@@ -105,9 +101,8 @@ class IdeaDetail(Handler):
 
 class IdeaFork(Handler):
     def post(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
+        check_user_is_not_owner_of_idea(request.user, idea)
 
         forked_idea = idea_actions.fork_idea(request.user, idea)
 
@@ -116,9 +111,8 @@ class IdeaFork(Handler):
 
 class IdeaPromote(Handler):
     def post(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
+        check_user_is_owner_of_idea(request.user, idea)
 
         project = idea_actions.promote_idea(request.user, idea)
 
@@ -131,9 +125,7 @@ class IdeaPromote(Handler):
 
 class IdeaInvitedList(Handler):
     def get(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
 
         invited_list = idea_actions.list_invited(idea)
         return responses.Ok([
@@ -147,26 +139,43 @@ class IdeaInvitedList(Handler):
 
     @login_required
     def post(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
+        check_user_is_owner_of_idea(request.user, idea)
+        check_idea_is_private(idea)
 
         validator = idea_entities.IdeaAddInvitedValidator(request.body)
         if validator.is_valid():
-            idea_actions.invite_users(request.user, idea, validator.cleaned_data["invited_usernames"])
+
+            invited_users = []
+            for invited_username in validator.cleaned_data["invited_usernames"]:
+                invited_user = load_user_secondary(invited_username)
+                check_user_is_not_self(request.user, invited_user)
+                check_user_is_not_invited_to_idea(invited_user, idea)
+                invited_users.append(invited_user)
+
+            idea_actions.invite_users(request.user, idea, invited_users)
+
             return responses.Ok()
         else:
             return responses.BadRequest(validator.errors)
 
     @login_required
     def delete(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
+        check_user_is_owner_of_idea(request.user, idea)
+        check_idea_is_private(idea)
 
         validator = idea_entities.IdeaRemoveInvitedValidator(request.body)
         if validator.is_valid():
-            idea_actions.remove_invited_user(request.user, idea, validator.cleaned_data["invited_username"])
+
+            invited_username = validator.cleaned_data["invited_username"]
+
+            invited_user = load_user_secondary(invited_username)
+            check_user_is_not_self(request.user, invited_user)
+            invited = load_user_invited_to_idea(invited_user, idea)
+
+            idea_actions.remove_invited_user(request.user, idea, invited)
+
             return responses.Ok()
         else:
             return responses.BadRequest(validator.errors)
@@ -178,9 +187,7 @@ class IdeaInvitedList(Handler):
 
 class IdeaCommentsList(Handler):
     def get(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
 
         comments = idea_actions.list_comments(idea)
         return responses.Ok([
@@ -194,9 +201,7 @@ class IdeaCommentsList(Handler):
 
     @login_required
     def post(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
 
         validator = idea_entities.IdeaCommentForCreateValidator(request.body)
         if validator.is_valid():
@@ -226,9 +231,7 @@ class IdeaCommentsList(Handler):
 
 class IdeaReactionsList(Handler):
     def get(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
 
         reactions = idea_actions.list_reactions(idea)
         return responses.Ok([
@@ -242,9 +245,7 @@ class IdeaReactionsList(Handler):
 
     @login_required
     def post(self, request, idea_uuid):
-        idea = idea_actions.get_idea(idea_uuid)
-        if not idea:
-            return responses.NotFound()
+        idea = load_idea(idea_uuid)
 
         validator = idea_entities.IdeaReactionForCreateValidator(request.body)
         if validator.is_valid():

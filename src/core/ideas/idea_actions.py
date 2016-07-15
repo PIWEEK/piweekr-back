@@ -66,9 +66,10 @@ def get_idea(idea_uuid):
 
 
 def fork_idea(user, idea):
-    if idea.owner_id == user.id:
-        raise exceptions.Forbidden("You cannot fork your own idea")
-
+    """
+    pre:
+        idea.owner_id != user.id
+    """
     forked_idea = idea_entities.Idea(
         uuid = uuid.uuid4().hex,
         is_active = True,
@@ -87,9 +88,10 @@ def fork_idea(user, idea):
 
 
 def promote_idea(user, idea):
-    if idea.owner_id != user.id:
-        raise exceptions.Forbidden("Only owner can promote an idea")
-
+    """
+    pre:
+        idea.owner_id != user.id
+    """
     idea.deactivate()
     idea_repository.update(idea)
 
@@ -126,22 +128,15 @@ def promote_idea(user, idea):
 ## Inviteds
 #######################################
 
-def invite_users(user, idea, invited_usernames):
-    if idea.owner_id != user.id:
-        raise exceptions.Forbidden("Only owner can invite users")
-    if idea.is_public:
-        raise exceptions.InconsistentData("Only private ideas can have invited users")
-
-    for invited_username in invited_usernames:
-        invited_user = user_repository.retrieve_by_username(invited_username)
-        if not invited_user:
-            raise exceptions.InconsistentData("Can't find user {}".format(invited_username))
-        if invited_user.id == user.id:
-            raise exceptions.InconsistentData("You cannot invite yourself to the idea")
-        invited = idea_repository.retrieve_invited(idea.id, invited_user.id)
-        if invited:
-            raise exceptions.InconsistentData("User {} was already invited to the idea".format(invited_username))
-
+def invite_users(user, idea, invited_users):
+    """
+    pre:
+        idea.owner_id == user.id
+        idea.is_public == False
+        forall(invited_users, lambda u: u.id != user.id)
+        forall(invited_users, lambda u: get_invited(idea, u) == None)
+    """
+    for invited_user in invited_users:
         idea_repository.create_invited(
             idea_entities.IdeaInvited(
                 idea_id = idea.id,
@@ -149,24 +144,21 @@ def invite_users(user, idea, invited_usernames):
             )
         )
 
+
+def get_invited(idea, user):
+    return idea_repository.retrieve_invited(idea.id, user.id)
+
+
 def list_invited(idea):
     return idea_repository.retrieve_invited_list(idea.id)
 
 
-def remove_invited_user(user, idea, invited_username):
-    if idea.owner_id != user.id:
-        raise exceptions.Forbidden("Only owner can invite users")
-    if idea.is_public:
-        raise exceptions.InconsistentData("Only private ideas can have invited users")
-
-    invited_user = user_repository.retrieve_by_username(invited_username)
-    if not invited_user:
-        raise exceptions.InconsistentData("Can't find user {}".format(invited_username))
-
-    invited = idea_repository.retrieve_invited(idea.id, invited_user.id)
-    if not invited:
-        raise exceptions.InconsistentData("User {} was not invited to the idea".format(invited_username))
-
+def remove_invited_user(user, idea, invited):
+    """
+    pre:
+        idea.owner_id == user.id
+        idea.is_public == False
+    """
     idea_repository.delete_invited(invited)
 
 

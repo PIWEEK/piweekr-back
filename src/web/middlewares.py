@@ -3,6 +3,7 @@ import json
 
 from core.users import user_actions
 from core import exceptions as core_exceptions
+from web.api import exceptions as api_exceptions
 
 import settings
 
@@ -22,6 +23,15 @@ def wrap_error_handler(func):
     def wrapper(request, *args, **kwargs):
         try:
             return func(request, *args, **kwargs)
+
+        except api_exceptions.NotFound as ex:
+            return responses.NotFound(**_render_error(ex))
+
+        except api_exceptions.Forbidden as ex:
+            return responses.Forbidden(**_render_error(ex))
+
+        except api_exceptions.BadRequest as ex:
+            return responses.BadRequest(**_render_error(ex))
 
         except core_exceptions.Forbidden as ex:
             return responses.Forbidden(**_render_error(ex))
