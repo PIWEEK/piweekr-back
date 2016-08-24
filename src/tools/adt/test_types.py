@@ -1,6 +1,6 @@
 import pytest
 
-from .types import ADT, Field, StrField, IntField, ADTID
+from .types import ADT, Field, StrField, IntField, ADT_WITH_ID
 
 
 class Point(ADT):
@@ -39,7 +39,7 @@ def test_adt():
         p.other_bad_method()
 
 
-class Mineral(ADTID):
+class Mineral(ADT_WITH_ID):
     name = StrField()
     description = StrField()
     hardness = IntField()

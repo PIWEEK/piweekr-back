@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tools.adt.types import ADT, ADTID, Field, StrField, IntField, BoolField, ArrowDateTimeField
+from tools.adt.types import ADT, ADT_WITH_ID, Field, StrField, IntField, BoolField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
 from skame.schemas import types as t, strings as s, numeric as n, base as b
@@ -56,7 +56,7 @@ class IdeaForUpdateValidator(v.Validator):
     })
 
 
-class Idea(ADTID):
+class Idea(ADT_WITH_ID):
     uuid = StrField()
     is_active = BoolField()
     title = StrField()
@@ -115,7 +115,7 @@ class IdeaHasForks(Relationship1N):
 ## Inviteds
 #######################################
 
-class IdeaInvited(ADTID):
+class IdeaInvited(ADT_WITH_ID):
     idea_id = IntField()
     user_id = IntField()
 
@@ -149,7 +149,7 @@ class IdeaRemoveInvitedValidator(v.Validator):
 ## Comment
 #######################################
 
-class IdeaCommentForCreate(ADTID):
+class IdeaCommentForCreate(ADT_WITH_ID):
     content = StrField()
 
 
@@ -162,7 +162,7 @@ class IdeaCommentForCreateValidator(v.Validator):
     })
 
 
-class IdeaComment(ADTID):
+class IdeaComment(ADT_WITH_ID):
     uuid = StrField()
     content = StrField()
     owner_id = IntField()
@@ -184,7 +184,7 @@ class IdeaCommentFromIdea(Relationship1N):
 ## Reaction
 #######################################
 
-class IdeaReactionForCreate(ADTID):
+class IdeaReactionForCreate(ADT_WITH_ID):
     code = StrField()
 
 
@@ -197,7 +197,7 @@ class IdeaReactionForCreateValidator(v.Validator):
     })
 
 
-class IdeaReaction(ADTID):
+class IdeaReaction(ADT_WITH_ID):
     uuid = StrField()
     code = StrField()
     owner_id = IntField()

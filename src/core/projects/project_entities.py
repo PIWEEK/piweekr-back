@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tools.adt.types import ADTID, Field, StrField, IntField, ArrowDateTimeField
+from tools.adt.types import ADT_WITH_ID, Field, StrField, IntField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
 from skame.schemas import types as t, strings as s, numeric as n, base as b
@@ -12,7 +12,7 @@ from tools import validator as v
 ## Project
 #######################################
 
-class Project(ADTID):
+class Project(ADT_WITH_ID):
     uuid = StrField()
     title = StrField()
     description = StrField()
@@ -63,7 +63,7 @@ class ProjectIsFromIdea(Relationship1N):
 ## Interested
 #######################################
 
-class ProjectInterested(ADTID):
+class ProjectInterested(ADT_WITH_ID):
     project_id = IntField()
     user_id = IntField()
 
@@ -82,7 +82,7 @@ class ProjectInterestedHasUser(Relationship1N):
 ## Participants
 #######################################
 
-class ProjectParticipant(ADTID):
+class ProjectParticipant(ADT_WITH_ID):
     project_id = IntField()
     user_id = IntField()
 
@@ -114,7 +114,7 @@ class ProjectParticipantHasUser(Relationship1N):
 ## Comment
 #######################################
 
-class ProjectCommentForCreate(ADTID):
+class ProjectCommentForCreate(ADT_WITH_ID):
     content = StrField()
 
 
@@ -127,7 +127,7 @@ class ProjectCommentForCreateValidator(v.Validator):
     })
 
 
-class ProjectComment(ADTID):
+class ProjectComment(ADT_WITH_ID):
     uuid = StrField()
     content = StrField()
     owner_id = IntField()
@@ -149,7 +149,7 @@ class ProjectCommentFromProject(Relationship1N):
 ## Reaction
 #######################################
 
-class ProjectReactionForCreate(ADTID):
+class ProjectReactionForCreate(ADT_WITH_ID):
     code = StrField()
 
 
@@ -162,7 +162,7 @@ class ProjectReactionForCreateValidator(v.Validator):
     })
 
 
-class ProjectReaction(ADTID):
+class ProjectReaction(ADT_WITH_ID):
     uuid = StrField()
     code = StrField()
     owner_id = IntField()

@@ -102,7 +102,7 @@ class ArrowDateTimeField(Field):
         super().__init__(type=arrow.Arrow, *args, **kwargs)
 
 
-class ADTID(ADT):
+class ADT_WITH_ID(ADT):
     id = IntField(null=True)
 
     @property

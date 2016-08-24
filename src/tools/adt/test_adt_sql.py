@@ -1,20 +1,20 @@
 import pytest
 
-from .types import ADTID, Field, IntField, StrField
+from .types import ADT_WITH_ID, Field, IntField, StrField
 from .relationships import Relationship1N, RoleSingle, RoleMulti, Context
 from sqlalchemy.sql import select, outerjoin
 
 from .adt_sql import SQLADTRepository
 
 
-class Card(ADTID):
+class Card(ADT_WITH_ID):
     deck_id = IntField()
     title = StrField()
     strength = IntField()
     defense = IntField()
 
 
-class Deck(ADTID):
+class Deck(ADT_WITH_ID):
     name = StrField()
 
 

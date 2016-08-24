@@ -1,11 +1,11 @@
-from tools.adt.types import ADTID, Field, StrField, IntField
+from tools.adt.types import ADT_WITH_ID, Field, StrField, IntField
 
 from skame.schemas import types as t, strings as s, numeric as n, base as b
 from skame.exceptions import SchemaError
 from tools import validator as v
 
 
-class UserForRegister(ADTID):
+class UserForRegister(ADT_WITH_ID):
     username = StrField()
     clear_password = StrField()
     full_name = StrField()
@@ -34,7 +34,7 @@ class UserForRegisterValidator(v.Validator):
     })
 
 
-class UserForUpdate(ADTID):
+class UserForUpdate(ADT_WITH_ID):
     username = StrField(null=True)
     clear_password = StrField(null=True)
     full_name = StrField(null=True)
@@ -56,7 +56,7 @@ class UserForUpdateValidator(v.Validator):
     })
 
 
-class User(ADTID):
+class User(ADT_WITH_ID):
     username = StrField()
     password = StrField()
     full_name = StrField()
