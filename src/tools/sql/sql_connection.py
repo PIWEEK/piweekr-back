@@ -67,17 +67,12 @@ class SQLConnection:
         # inserted_row["id"] = result.inserted_primary_key[0]
         # return inserted_row
 
-    def select_single_row(self, session, result_class, select):
+    def select_single_row(self, session, select):
         result = session.conn.execute(select)
-        result_data = result.first()
-        if result_data:
-            return result_class(result_data)
-        else:
-            return None
+        return result.first()
 
-    def select_rows(self, session, result_class, select):
-        result = session.conn.execute(select)
-        return [result_class(row) for row in result]
+    def select_rows(self, session, select):
+        return session.conn.execute(select)
 
     def update_table(self, session, update):
         result = session.conn.execute(update)

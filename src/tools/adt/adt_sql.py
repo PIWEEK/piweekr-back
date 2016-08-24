@@ -95,7 +95,6 @@ class SQLADTRepository:
     def retrieve_single_adt(self, context, the_class, select):
         row = self.conn.select_single_row(
             context.session,
-            dict,
             select,
         )
         return the_class(**row) if row else None
@@ -103,7 +102,6 @@ class SQLADTRepository:
     def retrieve_adts(self, context, the_class, select):
         rows = self.conn.select_rows(
             context.session,
-            dict,
             select
         )
         return [the_class(**row) for row in rows]
@@ -111,7 +109,6 @@ class SQLADTRepository:
     def retrieve_joined_adts(self, context, main_class, classes, select):
         rows = self.conn.select_rows(
             context.session,
-            dict,
             select
         )
 
