@@ -8,6 +8,8 @@ from tools.adt.converter import to_plain, from_plain
 from web.handler import Handler
 from web.decorators import login_required
 
+from web.api.loaders_and_checkers import *
+
 
 #######################################
 ## Project
@@ -42,10 +44,7 @@ class ProjectsList(Handler):
 
 class ProjectDetail(Handler):
     def get(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
         return responses.Ok(to_plain(project, ignore_fields=["id"]))
 
     def put(self, request):
@@ -61,10 +60,7 @@ class ProjectDetail(Handler):
 
 class ProjectInterestedList(Handler):
     def get(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
         interested_list = project_actions.list_interested(project)
         return responses.Ok([
             to_plain(interested, ignore_fields=["id", "project_id"],
@@ -77,19 +73,16 @@ class ProjectInterestedList(Handler):
 
     @login_required
     def post(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
+        check_user_is_not_owner_of_project(request.user, project)
+        check_user_is_not_interested_in_project(request.user, project)
         project_actions.add_interested_user(project, request.user)
         return responses.Ok()
 
     @login_required
     def delete(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
+        check_user_is_interested_in_project(request.user, project)
         project_actions.remove_interested_user(project, request.user)
         return responses.Ok()
 
@@ -100,10 +93,7 @@ class ProjectInterestedList(Handler):
 
 class ProjectParticipantsList(Handler):
     def get(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
         participant_list = project_actions.list_participant(project)
         return responses.Ok([
             to_plain(participant, ignore_fields=["id", "project_id"],
@@ -116,19 +106,16 @@ class ProjectParticipantsList(Handler):
 
     @login_required
     def post(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
+        check_user_is_owner_of_project(request.user, project)
+        check_user_is_not_participant_in_project(request.user, project)
         project_actions.add_participant_user(project, request.user)
         return responses.Ok()
 
     @login_required
     def delete(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
+        check_user_is_participant_in_project(request.user, project)
         project_actions.remove_participant_user(project, request.user)
         return responses.Ok()
 
@@ -139,10 +126,7 @@ class ProjectParticipantsList(Handler):
 
 class ProjectCommentsList(Handler):
     def get(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
         comments = project_actions.list_comments(project)
         return responses.Ok([
             to_plain(comment, ignore_fields=["id"],
@@ -155,10 +139,7 @@ class ProjectCommentsList(Handler):
 
     @login_required
     def post(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
         validator = project_entities.ProjectCommentForCreateValidator(request.body)
         if validator.is_valid():
             comment = project_actions.create_comment(
@@ -187,10 +168,7 @@ class ProjectCommentsList(Handler):
 
 class ProjectReactionsList(Handler):
     def get(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
         reactions = project_actions.list_reactions(project)
         return responses.Ok([
             to_plain(reaction, ignore_fields=["id"],
@@ -203,10 +181,7 @@ class ProjectReactionsList(Handler):
 
     @login_required
     def post(self, request, project_uuid):
-        project = project_actions.get_project(project_uuid)
-        if not project:
-            return responses.NotFound()
-
+        project = load_project(project_uuid)
         validator = project_entities.ProjectReactionForCreateValidator(request.body)
         if validator.is_valid():
             reaction = project_actions.create_reaction(

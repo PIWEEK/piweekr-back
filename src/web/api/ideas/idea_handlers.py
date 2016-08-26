@@ -1,3 +1,4 @@
+from copy import deepcopy
 from anillo.http import responses
 
 from core.ideas import idea_entities, idea_actions
@@ -9,6 +10,7 @@ from web.handler import Handler
 from web.decorators import login_required
 
 from web.api.loaders_and_checkers import *
+from web.api import exceptions
 
 
 #######################################
@@ -37,9 +39,22 @@ class IdeasList(Handler):
     def post(self, request):
         validator = idea_entities.IdeaForCreateValidator(request.body)
         if validator.is_valid():
+            if validator.cleaned_data["is_public"] and validator.cleaned_data.get("invited_usernames"):
+                raise exceptions.BadRequest("Only private ideas can have invited users")
+
+            invited_users = []
+            for invited_username in validator.cleaned_data["invited_usernames"]:
+                invited_user = load_user_secondary(invited_username)
+                check_user_is_not_self(request.user, invited_user)
+                invited_users.append(invited_user)
+
+            data = deepcopy(validator.cleaned_data)
+            del data["invited_usernames"]
+            data["invited_users"] = invited_users
+
             idea = idea_actions.create_idea(
                 request.user,
-                idea_entities.IdeaForCreate(**validator.cleaned_data)
+                idea_entities.IdeaForCreate(**data)
             )
             return responses.Ok(to_plain(
                 idea,
@@ -77,6 +92,7 @@ class IdeaDetail(Handler):
         validator = idea_entities.IdeaForUpdateValidator(request.body)
         if validator.is_valid():
             idea = idea_actions.update_idea(
+                request.user,
                 idea,
                 idea_entities.IdeaForUpdate(**validator.cleaned_data)
             )
@@ -205,6 +221,9 @@ class IdeaCommentsList(Handler):
 
         validator = idea_entities.IdeaCommentForCreateValidator(request.body)
         if validator.is_valid():
+            if not idea.is_public and idea.owner_id != request.user.id:
+                check_user_is_invited_to_idea(request.user, idea)
+
             comment = idea_actions.create_comment(
                 request.user,
                 idea,
@@ -249,6 +268,9 @@ class IdeaReactionsList(Handler):
 
         validator = idea_entities.IdeaReactionForCreateValidator(request.body)
         if validator.is_valid():
+            if not idea.is_public and idea.owner_id != request.user.id:
+                check_user_is_invited_to_idea(request.user, idea)
+
             reaction = idea_actions.create_reaction(
                 request.user,
                 idea,

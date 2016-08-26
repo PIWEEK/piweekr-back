@@ -4,8 +4,6 @@ from services.repository.sql.ideas import idea_repository
 from services.repository.sql.projects import project_repository
 from services.repository.sql.users import user_repository
 
-from core import exceptions
-
 from . import idea_entities
 
 import uuid
@@ -17,6 +15,11 @@ import arrow
 #######################################
 
 def create_idea(owner, idea_for_create):
+    """
+    pre:
+        not idea_for_create.invited_users or not idea_for_create.is_public
+        not idea_for_create.invited_users or forall(idea_for_create.invited_users, lambda u: u.id != owner.id)
+    """
     idea = idea_entities.Idea(
         uuid = uuid.uuid4().hex,
         is_active = True,
@@ -31,15 +34,8 @@ def create_idea(owner, idea_for_create):
     )
     idea = idea_repository.create(idea)
 
-    if idea_for_create.invited_usernames:
-        if idea.is_public:
-            raise exceptions.InconsistentData("Only private ideas can have invited users")
-        for invited_username in idea_for_create.invited_usernames:
-            invited_user = user_repository.retrieve_by_username(invited_username)
-            if not invited_user:
-                raise exceptions.InconsistentData("Can't find user {}".format(invited_username))
-            if invited_user.id == idea.owner_id:
-                raise exceptions.InconsistentData("You cannot invite yourself to the idea")
+    if idea_for_create.invited_users:
+        for invited_user in idea_for_create.invited_users:
             idea_repository.create_invited(
                 idea_entities.IdeaInvited(
                     idea_id = idea.id,
@@ -50,9 +46,12 @@ def create_idea(owner, idea_for_create):
     return idea_repository.retrieve_by_uuid(idea.uuid)
 
 
-def update_idea(idea, updates):
-    data = deepcopy(updates.to_dict())
-    idea.edit(data)
+def update_idea(owner, idea, idea_for_update):
+    """
+    pre:
+        idea.owner_id == owner.id
+    """
+    idea.edit(idea_for_update)
     idea_repository.update(idea)
     return idea_repository.retrieve_by_uuid(idea.uuid)
 
@@ -166,16 +165,15 @@ def remove_invited_user(user, idea, invited):
 ## Comment
 #######################################
 
-def create_comment(owner, idea, comment_for_create):
-    if not idea.is_public and idea.owner_id != owner.id:
-        invited = idea_repository.retrieve_invited(idea.id, owner.id)
-        if not invited:
-            raise exceptions.Forbidden("Only invited users can comment")
-
+def create_comment(user, idea, comment_for_create):
+    """
+    pre:
+        idea.is_public or idea.owner_id == user.id or get_invited(idea, user) != None
+    """
     comment = idea_entities.IdeaComment(
         uuid = uuid.uuid4().hex,
         content = comment_for_create.content,
-        owner_id = owner.id,
+        owner_id = user.id,
         idea_id = idea.id,
         created_at = arrow.now(),
     )
@@ -197,11 +195,10 @@ def list_comments(idea):
 #######################################
 
 def create_reaction(owner, idea, reaction_for_create):
-    if not idea.is_public and idea.owner_id != owner.id:
-        invited = idea_repository.retrieve_invited(idea.id, owner.id)
-        if not invited:
-            raise exceptions.Forbidden("Only invited users can react")
-
+    """
+    pre:
+        idea.is_public or idea.owner_id == user.id or get_invited(idea, user) != None
+    """
     reaction = idea_entities.IdeaReaction(
         uuid = uuid.uuid4().hex,
         code = reaction_for_create.code,

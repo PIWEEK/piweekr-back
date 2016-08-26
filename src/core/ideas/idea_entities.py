@@ -18,7 +18,7 @@ class IdeaForCreate(ADT):
     title = StrField()
     description = StrField()
     is_public = BoolField()
-    invited_usernames = Field(type=list, null=True) # List of usernames
+    invited_users = Field(type=list, null=True) # List of users
 
 
 class IdeaForCreateValidator(v.Validator):
@@ -68,13 +68,13 @@ class Idea(ADT_WITH_ID):
     comments_count = IntField()
     reactions_counts = Field(type=dict) # Format: {<emoji>: <counter>}
 
-    def edit(self, data):
-        if "title" in data:
-            self.title = data["title"]
-        if "description" in data:
-            self.description = data["description"]
-        if "is_public" in data:
-            self.is_public = data["is_public"]
+    def edit(self, idea_for_update):
+        if idea_for_update.title != None:
+            self.title = idea_for_update.title
+        if idea_for_update.description != None:
+            self.description = idea_for_update.description
+        if idea_for_update.is_public != None:
+            self.is_public = idea_for_update.is_public
 
     def deactivate(self):
         self.is_active = False

@@ -9,6 +9,8 @@ from tools.adt.converter import to_plain, from_plain
 from web.decorators import login_required
 from web.handler import Handler
 
+from web.api.loaders_and_checkers import *
+
 import settings
 
 
@@ -54,20 +56,13 @@ class UsersList(Handler):
 
 class UserDetail(Handler):
     def get(self, request, username):
-        user = user_actions.get_by_username(username)
-        if not user:
-            return responses.NotFound()
-
+        user = load_user(username)
         return responses.Ok(to_plain(user, ignore_fields=["id", "password"]))
 
     @login_required
     def patch(self, request, username):
-        user = user_actions.get_by_username(username)
-        if not user:
-            return responses.NotFound()
-
-        if request.user.username != user.username:
-            return responses.Forbidden({"error": "You can only update your user"})
+        user = load_user(username)
+        check_user_is_self(request.user, user)
 
         validator = user_entities.UserForUpdateValidator(request.body)
         if validator.is_valid():
