@@ -1,7 +1,6 @@
 from anillo.http import responses
 
-from core.projects import project_actions
-from core.projects import project_entities
+from core.projects import project_entities, project_validators, project_actions
 
 from tools.adt.converter import to_plain, from_plain
 
@@ -140,7 +139,7 @@ class ProjectCommentsList(Handler):
     @login_required
     def post(self, request, project_uuid):
         project = load_project(project_uuid)
-        validator = project_entities.ProjectCommentForCreateValidator(request.body)
+        validator = project_validators.ProjectCommentForCreateValidator(request.body)
         if validator.is_valid():
             comment = project_actions.create_comment(
                 request.user,
@@ -182,7 +181,7 @@ class ProjectReactionsList(Handler):
     @login_required
     def post(self, request, project_uuid):
         project = load_project(project_uuid)
-        validator = project_entities.ProjectReactionForCreateValidator(request.body)
+        validator = project_validators.ProjectReactionForCreateValidator(request.body)
         if validator.is_valid():
             reaction = project_actions.create_reaction(
                 request.user,

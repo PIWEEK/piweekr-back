@@ -1,42 +1,15 @@
+# -*- coding: utf-8 -*-
+
 from tools.adt.types import ADT, ADT_WITH_ID, Field, StrField, IntField
 
-from skame.schemas import types as t, strings as s, numeric as n, base as b
-from skame.exceptions import SchemaError
-from tools import validator as v
 
-
-#######################################
-## User
-#######################################
-
+# User
 
 class UserForRegister(ADT):
     username = StrField()
     clear_password = StrField()
     full_name = StrField()
     email = StrField()
-
-
-class UserForRegisterValidator(v.Validator):
-    schema = b.schema({
-        "username": b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        "clear_password": b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        "full_name": b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        "email": b.And(
-            t.String(),
-            s.NotEmpty(),
-            s.Email(),
-        ),
-    })
 
 
 class UserForUpdate(ADT):
@@ -53,29 +26,6 @@ class UserForUpdate(ADT):
             password == None or len(password) > 0
         """
         self.password = password
-
-
-class UserForUpdateValidator(v.Validator):
-    schema = b.schema({
-        b.Optional("username"): b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        b.Optional("clear_password"): b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        b.Optional("full_name"): b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        b.Optional("email"): b.And(
-            t.String(),
-            s.NotEmpty(),
-            s.Email(),
-        ),
-        b.Optional("avatar"): t.Dict() #TODO: Improve this validation
-    })
 
 
 class User(ADT_WITH_ID):

@@ -1,8 +1,7 @@
 from anillo.http import responses
 from itsdangerous import JSONWebSignatureSerializer
 
-from core.users import user_actions
-from core.users import user_entities
+from core.users import user_entities, user_validators, user_actions
 
 from tools.adt.converter import to_plain, from_plain
 
@@ -64,7 +63,7 @@ class UserDetail(Handler):
         user = load_user(username)
         check_user_is_self(request.user, user)
 
-        validator = user_entities.UserForUpdateValidator(request.body)
+        validator = user_validators.UserForUpdateValidator(request.body)
         if validator.is_valid():
             user = user_actions.update_user(
                 user,

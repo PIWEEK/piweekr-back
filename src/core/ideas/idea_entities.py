@@ -3,16 +3,10 @@
 from tools.adt.types import ADT, ADT_WITH_ID, Field, StrField, IntField, BoolField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
-from skame.schemas import types as t, strings as s, numeric as n, base as b
-from skame.exceptions import SchemaError
-from tools import validator as v
-
 from core.users import user_entities
 
 
-#######################################
-## Idea
-#######################################
+# Idea
 
 class IdeaForCreate(ADT):
     title = StrField()
@@ -21,39 +15,10 @@ class IdeaForCreate(ADT):
     invited_users = Field(type=list, null=True) # List of users
 
 
-class IdeaForCreateValidator(v.Validator):
-    schema = b.schema({
-        "title": b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        "description": b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        "is_public": t.Bool(),
-        b.Optional("invited_usernames"): t.List(),
-    })
-
-
 class IdeaForUpdate(ADT):
     title = StrField(null=True)
     description = StrField(null=True)
     is_public = BoolField(null=True)
-
-
-class IdeaForUpdateValidator(v.Validator):
-    schema = b.schema({
-        b.Optional("title"): b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        b.Optional("description"): b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-        b.Optional("is_public"): t.Bool(),
-    })
 
 
 class Idea(ADT_WITH_ID):
@@ -118,9 +83,7 @@ class IdeaHasForks(Relationship1N):
     role_n = RoleMulti(role_class=Idea, role_name="forks", role_fk="forked_from_id", required=False)
 
 
-#######################################
-## Inviteds
-#######################################
+# Inviteds
 
 class IdeaInvited(ADT_WITH_ID):
     idea_id = IntField()
@@ -137,36 +100,10 @@ class IdeaInvitedHasUser(Relationship1N):
     role_n = RoleMulti(role_class=IdeaInvited, role_name="ideas_invited", role_fk="user_id", required=True)
 
 
-class IdeaAddInvitedValidator(v.Validator):
-    schema = b.schema({
-        "invited_usernames": t.List(),
-    })
-
-
-class IdeaRemoveInvitedValidator(v.Validator):
-    schema = b.schema({
-        "invited_username": b.And(
-            t.String(),
-            s.NotEmpty(),
-        ),
-    })
-
-
-#######################################
-## Comment
-#######################################
+# Comment
 
 class IdeaCommentForCreate(ADT_WITH_ID):
     content = StrField()
-
-
-class IdeaCommentForCreateValidator(v.Validator):
-    schema = b.schema({
-        "content": b.And(
-            t.String(),
-            s.NotEmpty(),
-        )
-    })
 
 
 class IdeaComment(ADT_WITH_ID):
@@ -187,21 +124,10 @@ class IdeaCommentFromIdea(Relationship1N):
     role_n = RoleMulti(role_class=IdeaComment, role_name="comments", role_fk="idea_id", required=True)
 
 
-#######################################
-## Reaction
-#######################################
+# Reaction
 
 class IdeaReactionForCreate(ADT_WITH_ID):
     code = StrField()
-
-
-class IdeaReactionForCreateValidator(v.Validator):
-    schema = b.schema({
-        "code": b.And(
-            t.String(),
-            s.NotEmpty(),
-        )
-    })
 
 
 class IdeaReaction(ADT_WITH_ID):

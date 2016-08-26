@@ -3,14 +3,8 @@
 from tools.adt.types import ADT_WITH_ID, Field, StrField, IntField, ArrowDateTimeField
 from tools.adt.relationships import Relationship1N, RoleSingle, RoleMulti
 
-from skame.schemas import types as t, strings as s, numeric as n, base as b
-from skame.exceptions import SchemaError
-from tools import validator as v
 
-
-#######################################
-## Project
-#######################################
+# Project
 
 class Project(ADT_WITH_ID):
     uuid = StrField()
@@ -59,9 +53,7 @@ class ProjectIsFromIdea(Relationship1N):
     role_n = RoleMulti(role_class=Project, role_name="projects", role_fk="idea_from_id", required=True)
 
 
-#######################################
-## Interested
-#######################################
+# Interested
 
 class ProjectInterested(ADT_WITH_ID):
     project_id = IntField()
@@ -78,9 +70,7 @@ class ProjectInterestedHasUser(Relationship1N):
     role_n = RoleMulti(role_class=ProjectInterested, role_name="projects_interested", role_fk="user_id", required=True)
 
 
-#######################################
-## Participants
-#######################################
+# Participants
 
 class ProjectParticipant(ADT_WITH_ID):
     project_id = IntField()
@@ -97,9 +87,7 @@ class ProjectParticipantHasUser(Relationship1N):
     role_n = RoleMulti(role_class=ProjectParticipant, role_name="projects_participant", role_fk="user_id", required=True)
 
 
-#######################################
-## Piweek
-#######################################
+# Piweek
 
 
 # TODO:
@@ -110,21 +98,10 @@ class ProjectParticipantHasUser(Relationship1N):
 #    role_to = RoleDingle(role_class=Project, role_name="project", role_fk="piweek_id", required=True)
 
 
-#######################################
-## Comment
-#######################################
+# Comment
 
 class ProjectCommentForCreate(ADT_WITH_ID):
     content = StrField()
-
-
-class ProjectCommentForCreateValidator(v.Validator):
-    schema = b.schema({
-        "content": b.And(
-            t.String(),
-            s.NotEmpty(),
-        )
-    })
 
 
 class ProjectComment(ADT_WITH_ID):
@@ -145,21 +122,10 @@ class ProjectCommentFromProject(Relationship1N):
     role_n = RoleMulti(role_class=ProjectComment, role_name="comments", role_fk="project_id", required=True)
 
 
-#######################################
-## Reaction
-#######################################
+# Reaction
 
 class ProjectReactionForCreate(ADT_WITH_ID):
     code = StrField()
-
-
-class ProjectReactionForCreateValidator(v.Validator):
-    schema = b.schema({
-        "code": b.And(
-            t.String(),
-            s.NotEmpty(),
-        )
-    })
 
 
 class ProjectReaction(ADT_WITH_ID):
