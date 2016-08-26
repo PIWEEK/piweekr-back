@@ -8,6 +8,7 @@ SRC_DIR = os.path.join(os.path.dirname(__file__), "src")
 sys.path.append(SRC_DIR)
 
 from core.users import user_entities
+from core.users import user_validators
 from core.users import user_actions
 from core.ideas import idea_entities
 from core.ideas import idea_actions
@@ -59,7 +60,7 @@ def create_user(username, password, full_name, email):
     """
     Register a new user in the system.
     """
-    validator = user_entities.UserForRegisterValidator({
+    validator = user_validators.UserForRegisterValidator({
         "username": username,
         "clear_password": password,
         "full_name": full_name,

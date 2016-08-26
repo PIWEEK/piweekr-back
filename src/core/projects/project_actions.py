@@ -6,8 +6,6 @@ import uuid
 from services.repository.sql.projects import project_repository
 from services.repository.sql.users import user_repository
 
-from core import exceptions
-
 from . import project_entities
 
 
@@ -27,8 +25,8 @@ def create_new_project(project_for_create):
         idea_from_id = project_for_create.idea_from_id,
         owner_id = project_for_create.owner_id,
         created_at = arrow.utcnow(),
-        comments_count=0,
-        reactions_counts={}
+        comments_count = 0,
+        reactions_counts = {}
     )
 
     return project_repository.create(project)
@@ -48,10 +46,13 @@ def get_project(project_uuid):
 #######################################
 
 def add_interested_user(project, interested_user):
-    interested = project_repository.retrieve_interested(project.id, interested_user.id)
-    if interested:
-        raise exceptions.InconsistentData("User {} was already interested in the project".format(interested_user.username))
-
+    """
+    pre:
+        project.owner_id != interested_user.id
+        get_interested(project, interested_user) == None
+    post:
+        get_participant(project, interested_user) == None
+    """
     participant = project_repository.retrieve_participant(project.id, interested_user.id)
     if participant:
         project_repository.delete_participant(participant)
@@ -64,15 +65,20 @@ def add_interested_user(project, interested_user):
     )
 
 
+def get_interested(project, user):
+    return project_repository.retrieve_interested(project.id, user.id)
+
+
 def list_interested(project):
     return project_repository.retrieve_interested_list(project.id)
 
 
 def remove_interested_user(project, interested_user):
+    """
+    pre:
+        get_interested(project, interested_user) != None
+    """
     interested = project_repository.retrieve_interested(project.id, interested_user.id)
-    if not interested:
-        raise exceptions.InconsistentData("User {} was not interested in the project".format(interested_user.username))
-
     project_repository.delete_interested(interested)
 
 
@@ -81,10 +87,13 @@ def remove_interested_user(project, interested_user):
 #######################################
 
 def add_participant_user(project, participant_user):
-    participant = project_repository.retrieve_participant(project.id, participant_user.id)
-    if participant:
-        raise exceptions.InconsistentData("User {} was already participant in the project".format(participant_user.username))
-
+    """
+    pre:
+        project.owner_id != participant_user.id
+        get_participant(project, participant_user) == None
+    post:
+        get_interested(project, participant_user) == None
+    """
     interested = project_repository.retrieve_interested(project.id, participant_user.id)
     if interested:
         project_repository.delete_interested(interested)
@@ -102,10 +111,11 @@ def list_participant(project):
 
 
 def remove_participant_user(project, participant_user):
+    """
+    pre:
+        get_participant(project, participant_user) != None
+    """
     participant = project_repository.retrieve_participant(project.id, participant_user.id)
-    if not participant:
-        raise exceptions.InconsistentData("User {} was not participant in the project".format(participant_user.username))
-
     project_repository.delete_participant(participant)
 
 

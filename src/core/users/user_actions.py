@@ -45,11 +45,9 @@ def list_users():
     return users
 
 
-def update_user(user, updates):
-    data = deepcopy(updates.to_dict())
-    if data.get("clear_password", None):
-        data["password"] = generate_hash(data["clear_password"])
-        del data["clear_password"]
-    user.edit(data)
+def update_user(user, user_for_update):
+    if user_for_update.clear_password:
+        user_for_update.set_password(generate_hash(user_for_update.clear_password))
 
+    user.edit(user_for_update)
     return user_repository.update(user)
