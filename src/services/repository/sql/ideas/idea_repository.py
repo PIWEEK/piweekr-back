@@ -55,7 +55,7 @@ def list():
         )
         for idea in ideas:
             if idea.forked_from_id:
-                original_idea = repo.retrieve_joined_adt(
+                original_idea = repo.retrieve_single_joined_adt(
                     context,
                     idea_entities.Idea,
                     {"ideas": idea_entities.Idea, "users": user_entities.User},
@@ -122,7 +122,7 @@ def list_for_user(user):
 
 def retrieve_by_uuid(idea_uuid):
     with repo.context() as context:
-        idea = repo.retrieve_joined_adt(
+        idea = repo.retrieve_single_joined_adt(
             context,
             idea_entities.Idea,
             {"ideas": idea_entities.Idea, "users": user_entities.User},
@@ -141,7 +141,7 @@ def retrieve_by_uuid(idea_uuid):
             )
         )
         if idea and idea.forked_from_id:
-            original_idea = repo.retrieve_joined_adt(
+            original_idea = repo.retrieve_single_joined_adt(
                 context,
                 idea_entities.Idea,
                 {"ideas": idea_entities.Idea, "users": user_entities.User},
@@ -263,7 +263,7 @@ def retrieve_comment_list(idea):
 
 def retrieve_comment(comment_id):
     with repo.context() as context:
-        comment = repo.retrieve_joined_adt(
+        comment = repo.retrieve_single_joined_adt(
             context,
             idea_entities.IdeaComment,
             {"idea_comments": idea_entities.IdeaComment,
@@ -333,7 +333,7 @@ def retrieve_reaction_list(idea):
 
 def retrieve_reaction(reaction_id):
     with repo.context() as context:
-        reaction = repo.retrieve_joined_adt(
+        reaction = repo.retrieve_single_joined_adt(
             context,
             idea_entities.IdeaReaction,
             {"idea_reactions": idea_entities.IdeaReaction,

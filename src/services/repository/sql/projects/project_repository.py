@@ -273,7 +273,7 @@ def retrieve_comment_list(project):
 
 def retrieve_comment(comment_id):
     with repo.context() as context:
-        comment = repo.retrieve_joined_adt(
+        comment = repo.retrieve_single_joined_adt(
             context,
             project_entities.ProjectComment,
             {"project_comments": project_entities.ProjectComment,
@@ -343,7 +343,7 @@ def retrieve_reaction_list(project):
 
 def retrieve_reaction(reaction_id):
     with repo.context() as context:
-        reaction = repo.retrieve_joined_adt(
+        reaction = repo.retrieve_single_joined_adt(
             context,
             project_entities.ProjectReaction,
             {"project_reactions": project_entities.ProjectReaction,
